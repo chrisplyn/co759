@@ -1,21 +1,22 @@
-// Derived from 
-// http://www.aduni.org/courses/algorithms/handouts/Reciation_09.html#25630
 
-// For Summer 2002 CSE 2320 Lab 4, the following changes were made to ff.c:
-//   1. Adjacency lists (sorting, etc.)
-//   2. Print minimum cut
-
-// The Ford-Fulkerson Algorithm in C
 
 
 //#include <time.h>
 #include <queue>
 #include "FordFulkerson.h"
-//#include <algorithm>
+#include <algorithm>
 
 
-FordFulkerson::FordFulkerson():n(0),residualEdges(0),edgeTab(0),firstEdge(0),color(0),pred(0),predEdge(0){
-
+FordFulkerson::FordFulkerson(const Graph& g):edgeList(g.get_edgeList()),capList(g.get_capList()){
+	n = g.get_num_nodes();
+	numEdges = g.get_num_edges();
+	color = 0;
+	pred = 0;
+	predEdge = 0;
+	residualEdges = 0;
+	firstEdge = 0;
+	edgeTab = 0;
+	construct_residual_graph();
 }
 
 FordFulkerson::~FordFulkerson(){
@@ -95,6 +96,7 @@ int FordFulkerson::max_flow(int source, int sink)
 	  	exit(1);
 	}
 
+
 // Initialize empty flow.
 	max_flow = 0;
 	for (i=0; i<residualEdges; i++)
@@ -146,32 +148,15 @@ int FordFulkerson::max_flow(int source, int sink)
 	return max_flow;
 }
 
-// Reading the input file and organize adjacency lists for residual network.
-
-int FordFulkerson::tailThenHead(const void* xin, const void* yin)
-// Used in calls to qsort() and bsearch() for read_input_file()
-{
-	int result;
-	edge *x,*y;
-
-	x=(edge*) xin;
-	y=(edge*) yin;
-	result=x->tail - y->tail;
-	if (result!=0)
-	  return result;
-	else
-	  return x->head - y->head;
-}
-
 
 void FordFulkerson::dumpEdges(int count)
 {
 	int i;
 	printf("  i tail head  cap\n");
 	for (i=0; i<count; i++)
-	  printf("%3d %3d  %3d %5d\n",i,edgeTab[i].tail,edgeTab[i].head,
-		edgeTab[i].capacity);
+	  printf("%3d %3d  %3d %5d\n",i,edgeTab[i].tail,edgeTab[i].head,edgeTab[i].capacity);
 }
+
 
 void FordFulkerson::dumpFinal()
 {
@@ -190,46 +175,47 @@ void FordFulkerson::dumpFinal()
 }
 
 
+int FordFulkerson::tailThenHead(const void* xin, const void* yin)
+{	//compare function, used in sorting and binary search
+	int result;
+	edge *x,*y;
+
+	x=(edge*) xin;
+	y=(edge*) yin;
+	result=x->tail - y->tail;
+	if (result!=0)
+	  return result;
+	else
+	  return x->head - y->head;
+}
 
 
-void FordFulkerson::read_input_file(std::string& filename){
-	int tail,head,capacity,i,j;
-	int inputEdges;     // Number of edges in input file.
-	int workingEdges;   // Number of residual network edges initially 
-						// generated from input file.
-	edge work;
-	edge *ptr;
-	
-	FILE* input = fopen(filename.c_str(),"r");
-	// read number of nodes and edges
-	
-	fscanf(input,"%d %d",&n,&inputEdges);
-	// Table is allocated at worst-case size, since space for inverses is needed.
+void FordFulkerson::construct_residual_graph(){
+
+	if(edgeList==0 || capList==0){
+		printf("reading graph from file failed %d\n",__LINE__);
+		exit(5);
+	}
+
+	int workingEdges=0, tail, head, i, j;
 	
 	try{
-  		edgeTab = new edge[2*inputEdges];
+  		if(edgeTab == 0) edgeTab = new edge[2*numEdges];
 	}
 	catch(std::bad_alloc& exc){
   		printf("memory allocation failed %d\n",__LINE__);
 	  	exit(2);
 	}
 
-// read edges, each with a capacity
-	workingEdges=0;
-	for (i=0; i<inputEdges; i++)
+	for (i=0; i<numEdges; i++)
 	{
-	  fscanf(input,"%d %d %d",&tail,&head,&capacity);
-	  // Test for illegal edge, including incoming to source and outgoing from
-	  // sink.
-	  if (tail<0 || tail>=n-1 || head<1 || head>=n || capacity<=0)
-	  {
-		printf("Invalid input %d %d %d at %d\n",tail,head,capacity,__LINE__);
-		exit(3);
-	  }
+	  tail = edgeList[2*i];	
+	  head = edgeList[2*i+1];
+	  
 	  // Save input edge
 	  edgeTab[workingEdges].tail=tail;
 	  edgeTab[workingEdges].head=head;
-	  edgeTab[workingEdges].capacity=capacity;
+	  edgeTab[workingEdges].capacity=capList[i];
 	  workingEdges++;
 	  // Save inverse of input edge
 	  edgeTab[workingEdges].tail=head;
@@ -242,15 +228,10 @@ void FordFulkerson::read_input_file(std::string& filename){
 	{
 	  printf("Input & inverses:\n");
 	  dumpEdges(workingEdges);
-	}
+	}	
 
-	// Sort edges to make edges with common tail contiguous in edgeTab,
-	// along with making parallel edges contiguous.
-	// A faster sort is unlikely to speed-up substantially.
-	//startCPU=CPUtime();
-	
-	qsort(edgeTab,workingEdges,sizeof(edge),tailThenHead);
-	//sort(edgeTab,edgeTab+workingEdges); //c++ type of sorting
+	//qsort(edgeTab,workingEdges,sizeof(edge),tailThenHead);
+	std::sort(edgeTab,edgeTab+workingEdges); //c++ type of sorting
 
 	if (n<=20)
 	{
@@ -258,8 +239,6 @@ void FordFulkerson::read_input_file(std::string& filename){
 	  dumpEdges(workingEdges);
 	}
 
-// Coalesce parallel edges into a single edge by adding their capacities.
-	residualEdges=0;
 	for (i=1; i<workingEdges; i++)
 	  if (edgeTab[residualEdges].tail==edgeTab[i].tail
 	  &&  edgeTab[residualEdges].head==edgeTab[i].head)
@@ -272,21 +251,23 @@ void FordFulkerson::read_input_file(std::string& filename){
 		edgeTab[residualEdges].capacity=edgeTab[i].capacity;
 	  }
 	residualEdges++;
+	
 	if (n<=20)
 	{
 	  printf("Coalesced edges:\n");
 	  dumpEdges(residualEdges);
 	}
 
-// Set field in each edgeTab struct to point to inverse
-	//startCPU=CPUtime();
+	edge inverse_edge, *ptr; 
 	for (i=0; i<residualEdges; i++)
 	{
-	  work.tail=edgeTab[i].head;
-	  work.head=edgeTab[i].tail;
+	  inverse_edge.tail=edgeTab[i].head;
+	  inverse_edge.head=edgeTab[i].tail;
 
-	  ptr=(edge*) bsearch(&work,edgeTab,residualEdges,sizeof(edge),tailThenHead);
-	  
+	  //find the position of inverse edge in edge list
+	  //ptr=(edge*) bsearch(&inverse_edge,edgeTab,residualEdges,sizeof(edge),tailThenHead);
+	  ptr = std::lower_bound(edgeTab, edgeTab+residualEdges,inverse_edge);
+
 	  if (ptr==NULL)
 	  {
 		printf("bsearch %d failed %d\n",i,__LINE__);
@@ -299,7 +280,7 @@ void FordFulkerson::read_input_file(std::string& filename){
 	// a tail >= i.
 
 	try{
-  		firstEdge = new int[n+1];
+  		if(firstEdge==0) firstEdge = new int[n+1];
 	}
 	catch(std::bad_alloc& exc){
   		printf("memory allocation failed %d\n",__LINE__);
@@ -311,13 +292,15 @@ void FordFulkerson::read_input_file(std::string& filename){
 	{
 	  firstEdge[i]=j;
 	  // Skip over edges with vertex i as their tail.
-	  for ( ;
-		   j<residualEdges && edgeTab[j].tail==i;
-		   j++)
-		;
+	  for ( ;j<residualEdges && edgeTab[j].tail==i;j++){}		
 	}
 	firstEdge[n]=residualEdges;  //Sentinel
-	if (n<=20)
+
+	if (n<=20){
 	  dumpFinal();
+	}
 }
+
+
+
 

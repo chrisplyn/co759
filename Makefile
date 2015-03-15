@@ -2,7 +2,7 @@
 CXX = g++
 CXXFLAGS = -O3 -g -Wall -MMD -std=c++11
 EXEC = fordfulkerson
-OBJECTS = main.o FordFulkerson.o
+OBJECTS = main.o Graph.o FordFulkerson.o
 DEPENDS = ${OBJECTS:.o=.d}
 
 ${EXEC}: ${OBJECTS}
