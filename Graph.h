@@ -21,6 +21,8 @@ struct edge {
     }
 };
 
+
+
 class Graph
 {
 private:
@@ -31,12 +33,9 @@ private:
 	int numEdges;	//number of edges in original graph
 	int *edgeList; 	
 	int *capList;	//store capacity of each edge
-	
-
 	/****************
 	*graph utility functions 	
 	****************/
-
 
 public:
 	Graph();

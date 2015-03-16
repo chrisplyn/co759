@@ -1,7 +1,6 @@
 #ifndef __FORDFULKERSON_H__
 #define __FORDFULKERSON_H__
 
-
 #include <string>
 #include <stdio.h>
 #include <stdlib.h>
@@ -13,12 +12,24 @@
 #define oo 1000000000
 
 
+struct node
+{	
+	int id;
+	int mincap;  /**< capacity of minimum cut between node and parent in GH cut tree */
+	node* parent;	/*ptr to its parent in GH-tree*/
+	bool s_side; /*true is this node is on side of min-cut*/
+
+	//default constructor
+	node():id(0),mincap(0),parent(0),s_side(false){};	
+};
+
+
 
 class FordFulkerson
 {
 private:
-	int n;  // number of nodes
-	int numEdges;
+	const int n;  // number of nodes
+	const int numEdges;
 	int residualEdges;  // number of edges in residual network	
 	int	const * const edgeList;
 	int	const * const capList;
@@ -27,9 +38,9 @@ private:
 	int *predEdge;   // edgeTab subscript of edge used to reach vertex i in BFS
 	int *firstEdge;  //indicating first in range of edges with a common tail(start point)	
 	edge *edgeTab;	//store all edge objects of graph
+	node * nodeList;
 
-
-	int min (int, int);
+	static int min (int, int);
 	int bfs (int, int);	
 	static int tailThenHead(const void* , const void*); // this function must be static
 														//used to compare edges
@@ -40,8 +51,8 @@ private:
 public:
 	FordFulkerson(const Graph&);
 	~FordFulkerson();
-	
-	int max_flow (int, int);
+	int max_flow(int, int);
+	node* get_nodeList();
 };
 
 #endif

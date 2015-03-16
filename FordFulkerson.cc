@@ -1,22 +1,30 @@
 
 
-
 //#include <time.h>
 #include <queue>
 #include "FordFulkerson.h"
 #include <algorithm>
+#include <iostream>
 
-
-FordFulkerson::FordFulkerson(const Graph& g):edgeList(g.get_edgeList()),capList(g.get_capList()){
-	n = g.get_num_nodes();
-	numEdges = g.get_num_edges();
-	color = 0;
-	pred = 0;
-	predEdge = 0;
+FordFulkerson::FordFulkerson(const Graph& g):n(g.get_num_nodes()),numEdges(g.get_num_edges()),
+							edgeList(g.get_edgeList()),capList(g.get_capList()){
 	residualEdges = 0;
-	firstEdge = 0;
-	edgeTab = 0;
+	try{
+  		color = new int[n];
+  		pred = new int[n];
+  		predEdge = new int[n];
+		nodeList = new node[n];
+		edgeTab = new edge[2*numEdges];
+		firstEdge = new int[n+1];
+	}
+	catch(std::bad_alloc& exc){
+  		printf("memory allocation failed %d\n",__LINE__);
+	  	exit(1);
+	}
+
 	construct_residual_graph();
+	for(int i=0; i<n;i++)
+		nodeList[i].id = i;
 }
 
 FordFulkerson::~FordFulkerson(){
@@ -25,6 +33,7 @@ FordFulkerson::~FordFulkerson(){
 	delete [] predEdge;
 	delete [] firstEdge;
 	delete [] edgeTab;
+	delete [] nodeList;
 }
 
 int FordFulkerson::min(int x, int y)
@@ -33,6 +42,10 @@ int FordFulkerson::min(int x, int y)
 }
 
 
+node *FordFulkerson::get_nodeList(){
+	return nodeList;
+}
+
 // Breadth-First Search for an augmenting path
 
 int FordFulkerson::bfs(int start, int target)
@@ -40,7 +53,6 @@ int FordFulkerson::bfs(int start, int target)
 // Returns 1 if found, otherwise 0.
 {
 	int u,v,i;
-
     for (u=0; u<n; u++) {
    		color[u] = WHITE;
 	}   
@@ -86,16 +98,6 @@ int FordFulkerson::max_flow(int source, int sink)
 	int max_flow;
 	int APcount=0;
 
-	try{
-  		color = new int[n];
-  		pred = new int[n];
-  		predEdge = new int[n];
-	}
-	catch(std::bad_alloc& exc){
-  		printf("memory allocation failed %d\n",__LINE__);
-	  	exit(1);
-	}
-
 
 // Initialize empty flow.
 	max_flow = 0;
@@ -121,20 +123,21 @@ int FordFulkerson::max_flow(int source, int sink)
 		edgeTab[predEdge[u]].flow += increment;
 		edgeTab[i].flow -= increment;  // Reverse in residual
 	  }
-	  if (n<=20)
-	  {
-		// Path trace
-		for (u=sink; pred[u]!=(-1); u=pred[u])
-		  printf("%d<-",u);
-		printf("%d adds %d incremental flow\n",source,increment);
-	  }
+	 //  if (n<=20)
+	 //  {
+		// // Path trace
+		// for (u=sink; pred[u]!=(-1); u=pred[u])
+		//   printf("%d<-",u);
+		// printf("%d adds %d incremental flow\n",source,increment);
+	 //  }
 	  max_flow += increment;
 	}
 	printf("%d augmenting paths\n",APcount);
-// No more augmenting paths, so cut is based on reachability from last BFS.
-	if (n<=20)
-	{
-	  printf("S side of min-cut:\n");
+	std::cout << "maximum flow between " << source << " and " << sink << " is " << max_flow << std::endl;
+
+
+
+	printf("S side of min-cut:\n");
 	  for (u=0; u<n; u++)
 		if (color[u]==BLACK)
 		  printf("%d\n",u);
@@ -143,8 +146,15 @@ int FordFulkerson::max_flow(int source, int sink)
 	  for (u=0; u<n; u++)
 		if (color[u]==WHITE)
 		  printf("%d\n",u);
-	}
 
+	// No more augmenting paths, so cut is based on reachability from last BFS.
+	//set cut set of S and T
+	for (int u=0; u<n; u++){
+		nodeList[u].s_side = false; //must do!
+		if(color[u]==BLACK){
+		  nodeList[u].s_side = true; //if 
+		}
+	}	
 	return max_flow;
 }
 
@@ -199,14 +209,6 @@ void FordFulkerson::construct_residual_graph(){
 
 	int workingEdges=0, tail, head, i, j;
 	
-	try{
-  		if(edgeTab == 0) edgeTab = new edge[2*numEdges];
-	}
-	catch(std::bad_alloc& exc){
-  		printf("memory allocation failed %d\n",__LINE__);
-	  	exit(2);
-	}
-
 	for (i=0; i<numEdges; i++)
 	{
 	  tail = edgeList[2*i];	
@@ -224,20 +226,20 @@ void FordFulkerson::construct_residual_graph(){
 	  workingEdges++;
 	}
 	
-	if (n<=20)
-	{
+	// if (n<=20)
+	// {
 	  printf("Input & inverses:\n");
 	  dumpEdges(workingEdges);
-	}	
+	// }	
 
 	//qsort(edgeTab,workingEdges,sizeof(edge),tailThenHead);
 	std::sort(edgeTab,edgeTab+workingEdges); //c++ type of sorting
 
-	if (n<=20)
-	{
+	// if (n<=20)
+	// {
 	  printf("Sorted edges:\n");
 	  dumpEdges(workingEdges);
-	}
+	// }
 
 	for (i=1; i<workingEdges; i++)
 	  if (edgeTab[residualEdges].tail==edgeTab[i].tail
@@ -252,11 +254,11 @@ void FordFulkerson::construct_residual_graph(){
 	  }
 	residualEdges++;
 	
-	if (n<=20)
-	{
+	// if (n<=20)
+	// {
 	  printf("Coalesced edges:\n");
 	  dumpEdges(residualEdges);
-	}
+	// }
 
 	edge inverse_edge, *ptr; 
 	for (i=0; i<residualEdges; i++)
@@ -278,15 +280,6 @@ void FordFulkerson::construct_residual_graph(){
 
 	// For each vertex i, determine first edge in edgeTab with
 	// a tail >= i.
-
-	try{
-  		if(firstEdge==0) firstEdge = new int[n+1];
-	}
-	catch(std::bad_alloc& exc){
-  		printf("memory allocation failed %d\n",__LINE__);
-	  	exit(2);
-	}
-
 	j=0;
 	for (i=0; i<n; i++)
 	{
@@ -296,9 +289,9 @@ void FordFulkerson::construct_residual_graph(){
 	}
 	firstEdge[n]=residualEdges;  //Sentinel
 
-	if (n<=20){
+	// if (n<=20){
 	  dumpFinal();
-	}
+	// }
 }
 
 
