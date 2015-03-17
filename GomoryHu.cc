@@ -7,13 +7,9 @@ GomoryHu::GomoryHu(const Graph& g):numNodes(g.get_num_nodes()),gr(&g){
 
 GomoryHu::~GomoryHu(){}
 
-node * GomoryHu::construct_GH_tree(){
+const node * GomoryHu::construct_GH_tree(){
 	FordFulkerson ff(*gr);
 	
-	//printf("total flow is %d\n",ff.max_flow(0,5));  // 0=source, n-1=sink
-	//nodeList = ff.get_nodeList();
-
-
 	// for(int i=0; i<numNodes; i++){
 	// 	if(nodeList[i].s_side){
 	// 		std::cout << nodeList[i].id << " is on S side of min-cut" << std::endl;
@@ -23,10 +19,10 @@ node * GomoryHu::construct_GH_tree(){
 	// }
    nodeList = ff.get_nodeList();
    
-   int maxfl,i,s,t;
-   
+   int i,s,t;
+   double maxfl;
    for(i=0;i<numNodes;i++){
-   	   nodeList[i].parent = &(nodeList[0]);
+   	nodeList[i].parent = &(nodeList[0]);
    }
 
    // for(s=0;s<numNodes;s++){
@@ -35,8 +31,8 @@ node * GomoryHu::construct_GH_tree(){
    // 		}
    // }
 
-   for ( s=1; s<numNodes; s++ )
-   { 
+   for ( s=1; s<numNodes; s++){ 
+
       t = nodeList[s].parent->id;
       maxfl = ff.max_flow(s,t);
 
@@ -56,8 +52,7 @@ node * GomoryHu::construct_GH_tree(){
         }    
       }
 
-      if ( nodeList[t].parent->s_side )
-      { 
+      if ( nodeList[t].parent->s_side ){ 
          nodeList[s].parent = nodeList[t].parent;
          nodeList[t].parent = &(nodeList[s]);
          nodeList[s].mincap = nodeList[t].mincap;

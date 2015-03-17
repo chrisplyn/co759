@@ -20,41 +20,37 @@ int const * const Graph::get_edgeList() const{
 	return edgeList;
 }
 
-int const * const Graph::get_capList() const{
+double const * const Graph::get_capList() const{
 	return capList;
 }
 
 
 void Graph::read_input_file(const std::string &filename){
-	int tail,head,capacity,i;
+	int tail,head,i;
+	double capacity;
 	FILE* input = fopen(filename.c_str(),"r");
 	
 	// read number of nodes and edges
 	fscanf(input,"%d %d",&n,&numEdges);
 	
-	// if(undirected){
-	// 	numEdges = 2*numEdges;
-	// }
-
 	try{
   		edgeList = new int[4*numEdges];
-  		capList = new int[2*numEdges];
+  		capList = new double[2*numEdges];
 	}
 	catch(std::bad_alloc& exc){
   		printf("memory allocation failed %d\n",__LINE__);
 	  	exit(2);
 	}
 
-
 	// read edges, each with a capacity
 	for (i=0; i<numEdges; i++)
 	{
-	  fscanf(input,"%d %d %d",&tail,&head,&capacity);
+	  fscanf(input,"%d %d %lf",&tail,&head,&capacity);
 	  // Test for illegal edge, including incoming to source and outgoing from
 	  // sink.
 	  if (tail<0 || tail>=n-1 || head<1 || head>=n || capacity<=0)
 	  {
-		printf("Invalid input %d %d %d at %d\n",tail,head,capacity,__LINE__);
+		printf("Invalid input %d %d %lf at %d\n",tail,head,capacity,__LINE__);
 		exit(3);
 	  }
 	  	// edgeList[2*i] = tail;

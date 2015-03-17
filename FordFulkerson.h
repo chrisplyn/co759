@@ -9,18 +9,18 @@
 #define WHITE 0
 #define GRAY 1
 #define BLACK 2
-#define oo 1000000000
+#define oo 1000000000.0
 
 
 struct node
 {	
 	int id;
-	int mincap;  /**< capacity of minimum cut between node and parent in GH cut tree */
+	double mincap;  /**< capacity of minimum cut between node and parent in GH cut tree */
 	node* parent;	/*ptr to its parent in GH-tree*/
 	bool s_side; /*true is this node is on side of min-cut*/
 
 	//default constructor
-	node():id(0),mincap(0),parent(0),s_side(false){};	
+	node():id(0),mincap(0.0),parent(0),s_side(false){};	
 };
 
 
@@ -32,7 +32,7 @@ private:
 	const int numEdges;
 	int residualEdges;  // number of edges in residual network	
 	int	const * const edgeList;
-	int	const * const capList;
+	double const * const capList;
 	int *color;      // Needed for breadth-first search               
 	int *pred;       // Array to store augmenting path
 	int *predEdge;   // edgeTab subscript of edge used to reach vertex i in BFS
@@ -40,7 +40,7 @@ private:
 	edge *edgeTab;	//store all edge objects of graph
 	node * nodeList;
 
-	static int min (int, int);
+	static double min (double, double);
 	int bfs (int, int);	
 	static int tailThenHead(const void* , const void*); // this function must be static
 														//used to compare edges
@@ -51,7 +51,7 @@ private:
 public:
 	FordFulkerson(const Graph&);
 	~FordFulkerson();
-	int max_flow(int, int);
+	double max_flow(int, int);
 	node* get_nodeList();
 };
 

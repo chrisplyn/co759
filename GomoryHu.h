@@ -14,7 +14,7 @@ private:
 public:
 	GomoryHu(const Graph&);
 	~GomoryHu();
-	node * construct_GH_tree();
+	const node * construct_GH_tree();
 	/* data */
 };
 

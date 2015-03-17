@@ -9,7 +9,8 @@
 
 //internal representation of edge
 struct edge {
-	int tail=0,head=0,capacity=0,flow=0,inverse=0;
+	int tail=0,head=0,inverse=0;
+	double capacity=0.0, flow=0.0;
 
 	//overload operator<, required for sorting and binary search
 	bool operator<(const edge& other) const{
@@ -32,7 +33,7 @@ private:
 	int n;  // number of nodes
 	int numEdges;	//number of edges in original graph
 	int *edgeList; 	
-	int *capList;	//store capacity of each edge
+	double *capList;	//store capacity of each edge
 	/****************
 	*graph utility functions 	
 	****************/
@@ -47,7 +48,7 @@ public:
 	int const * const get_edgeList() const;	// return a const ptr to edgeList, edgeList is not allowed to be modified
 										// const applies to the item to its left 
 										// or if there is no item to its left, the item to its right)
-	int const * const get_capList() const;
+	double const * const get_capList() const;
 	
 };	
 

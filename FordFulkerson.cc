@@ -5,6 +5,7 @@
 #include "FordFulkerson.h"
 #include <algorithm>
 #include <iostream>
+#include <iomanip>
 
 FordFulkerson::FordFulkerson(const Graph& g):n(g.get_num_nodes()),numEdges(g.get_num_edges()),
 							edgeList(g.get_edgeList()),capList(g.get_capList()){
@@ -36,7 +37,7 @@ FordFulkerson::~FordFulkerson(){
 	delete [] nodeList;
 }
 
-int FordFulkerson::min(int x, int y)
+double FordFulkerson::min(double x, double y)
 {
 	return x<y ? x : y;  // returns minimum of x and y
 }
@@ -71,7 +72,7 @@ int FordFulkerson::bfs(int start, int target)
 		  // enqueue v.
 		for (i=firstEdge[u]; i<firstEdge[u+1]; i++){
 			v=edgeTab[i].head;
-			if (color[v]==WHITE && edgeTab[i].capacity-edgeTab[i].flow>0)
+			if (color[v]==WHITE && edgeTab[i].capacity-edgeTab[i].flow>0.0)
 			{
 			  Q.push(v);
 			  pred[v] = u;
@@ -92,25 +93,24 @@ int FordFulkerson::bfs(int start, int target)
 
 // Ford-Fulkerson Algorithm
 
-int FordFulkerson::max_flow(int source, int sink)
+double FordFulkerson::max_flow(int source, int sink)
 {
 	int i,u;
-	int max_flow;
-	int APcount=0;
-
+	double max_flow;
 
 // Initialize empty flow.
-	max_flow = 0;
+	max_flow = 0.0;
 	for (i=0; i<residualEdges; i++)
-	  edgeTab[i].flow=0;
+	  edgeTab[i].flow=0.0;
 
 // While there exists an augmenting path,
 // increment the flow along this path.
 	while (bfs(source,sink))
 	{
   // Determine the amount by which we can increment the flow.
-	  int increment = oo;
-	  APcount++;
+	  double increment = oo;
+	  //std::cout << "the increment is " << std::setprecision(7) << increment << std::endl;
+	  //printf("%5f\n",increment+0.5);
 	  for (u=sink; pred[u]!=(-1); u=pred[u])
 	  {
 		i=predEdge[u];
@@ -123,29 +123,23 @@ int FordFulkerson::max_flow(int source, int sink)
 		edgeTab[predEdge[u]].flow += increment;
 		edgeTab[i].flow -= increment;  // Reverse in residual
 	  }
-	 //  if (n<=20)
-	 //  {
-		// // Path trace
-		// for (u=sink; pred[u]!=(-1); u=pred[u])
-		//   printf("%d<-",u);
-		// printf("%d adds %d incremental flow\n",source,increment);
-	 //  }
+	  //std::cout << "the increment is " << increment << std::endl;
+	  //printf("%5f\n",increment);
 	  max_flow += increment;
 	}
-	printf("%d augmenting paths\n",APcount);
-	std::cout << "maximum flow between " << source << " and " << sink << " is " << max_flow << std::endl;
+	// printf("%d augmenting paths\n",APcount);
+	//std::cout << "maximum flow between " << source << " and " << sink << " is " << max_flow << std::endl;
+	//printf("%5f\n",max_flow);
+	
+	// printf("S side of min-cut:\n");
+	//   for (u=0; u<n; u++)
+	// 	if (color[u]==BLACK)
+	// 	  printf("%d\n",u);
 
-
-
-	printf("S side of min-cut:\n");
-	  for (u=0; u<n; u++)
-		if (color[u]==BLACK)
-		  printf("%d\n",u);
-
-	  printf("T side of min-cut:\n");
-	  for (u=0; u<n; u++)
-		if (color[u]==WHITE)
-		  printf("%d\n",u);
+	//   printf("T side of min-cut:\n");
+	//   for (u=0; u<n; u++)
+	// 	if (color[u]==WHITE)
+	// 	  printf("%d\n",u);
 
 	// No more augmenting paths, so cut is based on reachability from last BFS.
 	//set cut set of S and T
@@ -164,7 +158,7 @@ void FordFulkerson::dumpEdges(int count)
 	int i;
 	printf("  i tail head  cap\n");
 	for (i=0; i<count; i++)
-	  printf("%3d %3d  %3d %5d\n",i,edgeTab[i].tail,edgeTab[i].head,edgeTab[i].capacity);
+	  printf("%3d %3d  %3d %5f\n",i,edgeTab[i].tail,edgeTab[i].head,edgeTab[i].capacity);
 }
 
 
@@ -180,7 +174,7 @@ void FordFulkerson::dumpFinal()
 
 	printf("  i tail head  cap  inv\n");
 	for (i=0; i<residualEdges; i++)
-	  printf("%3d %3d  %3d %5d  %3d\n",i,edgeTab[i].tail,edgeTab[i].head,
+	  printf("%3d %3d  %3d %5f  %3d\n",i,edgeTab[i].tail,edgeTab[i].head,
 		edgeTab[i].capacity,edgeTab[i].inverse);
 }
 
@@ -222,24 +216,18 @@ void FordFulkerson::construct_residual_graph(){
 	  // Save inverse of input edge
 	  edgeTab[workingEdges].tail=head;
 	  edgeTab[workingEdges].head=tail;
-	  edgeTab[workingEdges].capacity=0;
+	  edgeTab[workingEdges].capacity=0.0;
 	  workingEdges++;
 	}
 	
-	// if (n<=20)
-	// {
-	  printf("Input & inverses:\n");
-	  dumpEdges(workingEdges);
-	// }	
+	// printf("Input & inverses:\n");
+	// dumpEdges(workingEdges);
 
 	//qsort(edgeTab,workingEdges,sizeof(edge),tailThenHead);
 	std::sort(edgeTab,edgeTab+workingEdges); //c++ type of sorting
 
-	// if (n<=20)
-	// {
-	  printf("Sorted edges:\n");
-	  dumpEdges(workingEdges);
-	// }
+	// printf("Sorted edges:\n");
+	//dumpEdges(workingEdges);
 
 	for (i=1; i<workingEdges; i++)
 	  if (edgeTab[residualEdges].tail==edgeTab[i].tail
@@ -254,11 +242,8 @@ void FordFulkerson::construct_residual_graph(){
 	  }
 	residualEdges++;
 	
-	// if (n<=20)
-	// {
-	  printf("Coalesced edges:\n");
-	  dumpEdges(residualEdges);
-	// }
+	// printf("Coalesced edges:\n");
+	//dumpEdges(residualEdges);
 
 	edge inverse_edge, *ptr; 
 	for (i=0; i<residualEdges; i++)
@@ -288,10 +273,9 @@ void FordFulkerson::construct_residual_graph(){
 	  for ( ;j<residualEdges && edgeTab[j].tail==i;j++){}		
 	}
 	firstEdge[n]=residualEdges;  //Sentinel
-
-	// if (n<=20){
-	  dumpFinal();
-	// }
+	
+	//dumpFinal();
+	
 }
 
 
