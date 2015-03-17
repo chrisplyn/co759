@@ -21,6 +21,11 @@ struct node
 
 	//default constructor
 	node():id(0),mincap(0.0),parent(0),s_side(false){};	
+	
+	bool operator<(const node& other) const{
+		return (mincap < other.mincap);
+    }
+		
 };
 
 

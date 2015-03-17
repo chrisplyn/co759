@@ -7,15 +7,13 @@
 class GomoryHu
 {
 private:
-	node * nodeList;
 	const int numNodes;
-	Graph const * const gr;
+	FordFulkerson * const ff;
 
 public:
 	GomoryHu(const Graph&);
 	~GomoryHu();
-	const node * construct_GH_tree();
-	/* data */
+	node * construct_GH_tree();
 };
 
 #endif
