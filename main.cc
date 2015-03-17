@@ -15,12 +15,12 @@ int main()
 	const node* const nl = gh.construct_GH_tree();
 	const int numNodes = g.get_num_nodes();
 	
-
-	// FordFulkerson ff(g);
-	// //ff.construct_residual_graph();
-	// printf("total flow is %d\n",ff.max_flow(0,5));  // 0=source, n-1=sink
-	// node* nl = ff.get_nodeList();
-
+//~ 
+	//~ // FordFulkerson ff(g);
+	//~ // //ff.construct_residual_graph();
+	//~ // printf("total flow is %d\n",ff.max_flow(0,5));  // 0=source, n-1=sink
+	//~ // node* nl = ff.get_nodeList();
+//~ 
 	for(int i=0; i<numNodes; i++){
 		// if(nl[i].s_side){
 		// 	cout << nl[i].id << " is on S side of min-cut" << endl;
@@ -28,7 +28,7 @@ int main()
 		// 	cout << nl[i].id << " is on T side of min-cut" << endl;
 		// }
 		//printf("%d %d %5f\n",nl[i].id, nl[i].parent->id, nl[i].mincap);
-		if(nl == 0 ) cout << "wrong!!!!!" << endl;
+		//cout << nl[i].id << endl;
 		cout << nl[i].id << " " << nl[i].parent->id << " " << nl[i].mincap << endl;
 	}
 

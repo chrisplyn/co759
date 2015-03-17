@@ -220,8 +220,8 @@ void FordFulkerson::construct_residual_graph(){
 	  workingEdges++;
 	}
 	
-	// printf("Input & inverses:\n");
-	// dumpEdges(workingEdges);
+	//~ printf("Input & inverses:\n");
+	//~ dumpEdges(workingEdges);
 
 	//qsort(edgeTab,workingEdges,sizeof(edge),tailThenHead);
 	std::sort(edgeTab,edgeTab+workingEdges); //c++ type of sorting
@@ -274,7 +274,7 @@ void FordFulkerson::construct_residual_graph(){
 	}
 	firstEdge[n]=residualEdges;  //Sentinel
 	
-	//dumpFinal();
+	dumpFinal();
 	
 }
 

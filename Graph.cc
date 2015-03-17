@@ -28,6 +28,7 @@ double const * const Graph::get_capList() const{
 void Graph::read_input_file(const std::string &filename){
 	int tail,head,i;
 	double capacity;
+	 	
 	FILE* input = fopen(filename.c_str(),"r");
 	
 	// read number of nodes and edges
@@ -42,9 +43,12 @@ void Graph::read_input_file(const std::string &filename){
 	  	exit(2);
 	}
 
+	
+
 	// read edges, each with a capacity
 	for (i=0; i<numEdges; i++)
 	{
+	  
 	  fscanf(input,"%d %d %lf",&tail,&head,&capacity);
 	  // Test for illegal edge, including incoming to source and outgoing from
 	  // sink.
@@ -64,6 +68,9 @@ void Graph::read_input_file(const std::string &filename){
 	    capList[2*i+1] = capacity;
 	}
 	numEdges = 2*numEdges;
+	fclose(input);	//must CLOSE file object!!!!!!!
+
+		
 	// if(undirected){
 	// 	numEdges = 2*numEdges;
 
