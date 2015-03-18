@@ -3,9 +3,8 @@
 //#include <time.h>
 #include <queue>
 #include "FordFulkerson.h"
-#include <algorithm>
-#include <iostream>
-#include <iomanip>
+
+
 
 FordFulkerson::FordFulkerson(const Graph& g):n(g.get_num_nodes()),numEdges(g.get_num_edges()),
 							edgeList(g.get_edgeList()),capList(g.get_capList()){
@@ -107,10 +106,8 @@ double FordFulkerson::max_flow(int source, int sink)
 // increment the flow along this path.
 	while (bfs(source,sink))
 	{
-  // Determine the amount by which we can increment the flow.
+  		// Determine the amount by which we can increment the flow.
 	  double increment = oo;
-	  //std::cout << "the increment is " << std::setprecision(7) << increment << std::endl;
-	  //printf("%5f\n",increment+0.5);
 	  for (u=sink; pred[u]!=(-1); u=pred[u])
 	  {
 		i=predEdge[u];
@@ -123,23 +120,8 @@ double FordFulkerson::max_flow(int source, int sink)
 		edgeTab[predEdge[u]].flow += increment;
 		edgeTab[i].flow -= increment;  // Reverse in residual
 	  }
-	  //std::cout << "the increment is " << increment << std::endl;
-	  //printf("%5f\n",increment);
 	  max_flow += increment;
 	}
-	// printf("%d augmenting paths\n",APcount);
-	//std::cout << "maximum flow between " << source << " and " << sink << " is " << max_flow << std::endl;
-	//printf("%5f\n",max_flow);
-	
-	// printf("S side of min-cut:\n");
-	//   for (u=0; u<n; u++)
-	// 	if (color[u]==BLACK)
-	// 	  printf("%d\n",u);
-
-	//   printf("T side of min-cut:\n");
-	//   for (u=0; u<n; u++)
-	// 	if (color[u]==WHITE)
-	// 	  printf("%d\n",u);
 
 	// No more augmenting paths, so cut is based on reachability from last BFS.
 	//set cut set of S and T
@@ -223,7 +205,6 @@ void FordFulkerson::construct_residual_graph(){
 	//~ printf("Input & inverses:\n");
 	//~ dumpEdges(workingEdges);
 
-	//qsort(edgeTab,workingEdges,sizeof(edge),tailThenHead);
 	std::sort(edgeTab,edgeTab+workingEdges); //c++ type of sorting
 
 	// printf("Sorted edges:\n");
@@ -252,7 +233,6 @@ void FordFulkerson::construct_residual_graph(){
 	  inverse_edge.head=edgeTab[i].tail;
 
 	  //find the position of inverse edge in edge list
-	  //ptr=(edge*) bsearch(&inverse_edge,edgeTab,residualEdges,sizeof(edge),tailThenHead);
 	  ptr = std::lower_bound(edgeTab, edgeTab+residualEdges,inverse_edge);
 
 	  if (ptr==NULL)
@@ -274,7 +254,7 @@ void FordFulkerson::construct_residual_graph(){
 	}
 	firstEdge[n]=residualEdges;  //Sentinel
 	
-	dumpFinal();
+	//dumpFinal();
 	
 }
 

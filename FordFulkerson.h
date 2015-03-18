@@ -5,28 +5,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "Graph.h"
+#include <algorithm>
+#include <iostream>
+#include <iomanip>
 
 #define WHITE 0
 #define GRAY 1
 #define BLACK 2
 #define oo 1000000000.0
 
-
-struct node
-{	
-	int id;
-	double mincap;  /**< capacity of minimum cut between node and parent in GH cut tree */
-	node* parent;	/*ptr to its parent in GH-tree*/
-	bool s_side; /*true is this node is on side of min-cut*/
-
-	//default constructor
-	node():id(0),mincap(0.0),parent(0),s_side(false){};	
-	
-	bool operator<(const node& other) const{
-		return (mincap < other.mincap);
-    }
-		
-};
 
 
 
