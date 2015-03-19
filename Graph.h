@@ -67,6 +67,7 @@ public:
 										// or if there is no item to its left, the item to its right)
 	double const * const get_capList() const;
 	
+	void construct_g_star();
 };	
 
 #endif

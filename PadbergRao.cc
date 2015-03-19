@@ -5,7 +5,7 @@ PadbergRao::PadbergRao(Graph &g):gh(new GomoryHu(g)),numNodes(g.get_num_nodes())
 	std::sort(nl,nl+numNodes);	//sort Gomory-Hu tree edges according to its capacity
 
 	adjacencyList = new std::vector<int>[numNodes];
-	construct_gh_tree_adjacencyList();
+	construct_gh_tree_adjacencyList(); //construct Gomory-Hu tree's adjacency list
 
     visited = new bool[numNodes]();	//used for DFS
 }
@@ -40,7 +40,7 @@ void PadbergRao::construct_gh_tree_adjacencyList(){
 }	
 
 
-
+//depth first search routine
 void PadbergRao::dfs(int u){
     visited[u] = true;
     std::vector<int>::iterator it;
@@ -53,7 +53,7 @@ void PadbergRao::dfs(int u){
     }
 }
 
-
+//find minimum cut sets based on the results of DFS
 void PadbergRao::find_Component(){
    for( int i = 0 ; i < numNodes; i++ ){
         if(!visited[i]){ 
@@ -67,10 +67,8 @@ void PadbergRao::find_Component(){
 void PadbergRao::remove_edge(){
 	int i,origin,destination;
 	
-
 	for(i=1; i<numNodes; i++){
-		//reconstruct graph, reset components and visited to inital status
-	    
+		//reconstruct graph, reset components and visited to inital status	    
 		if(!components.empty()) components.clear();		
 		for(int j=0; j<numNodes;j++){
 			visited[j] = false;
@@ -80,14 +78,14 @@ void PadbergRao::remove_edge(){
 		origin = nl[i].id;
 		destination = nl[i].parent;  
         //print__gh_tree_adjacencyList();
-		std::cout << "The removed edge is (" << origin << "," << destination << ")" << std::endl;
+		//std::cout << "The removed edge is (" << origin << "," << destination << ")" << std::endl;
         
 		adjacencyList[origin].erase(std::remove(adjacencyList[origin].begin(), adjacencyList[origin].end(), destination), adjacencyList[origin].end());	
 		adjacencyList[destination].erase(std::remove(adjacencyList[destination].begin(), adjacencyList[destination].end(), origin), adjacencyList[destination].end());	
 
 		find_Component();
-        std::cout << "two components after remove this edge is " << std::endl;
-		print_Component();
+        //std::cout << "two components after remove this edge is " << std::endl;
+		//print_Component();
 
         // restore original adjacency list
 		adjacencyList[origin].push_back(destination);

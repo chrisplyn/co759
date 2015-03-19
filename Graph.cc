@@ -25,6 +25,15 @@ double const * const Graph::get_capList() const{
 }
 
 
+void Graph::construct_g_star(){
+	/*
+	to be implemented, this function should take LP solution 
+	*/
+}
+
+
+
+
 void Graph::read_input_file(const std::string &filename){
 	int tail,head,i;
 	double capacity;
@@ -44,7 +53,6 @@ void Graph::read_input_file(const std::string &filename){
 	}
 
 	
-
 	// read edges, each with a capacity
 	for (i=0; i<numEdges; i++)
 	{

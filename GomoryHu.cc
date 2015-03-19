@@ -20,8 +20,7 @@ node * GomoryHu::construct_GH_tree(){
    for ( s=1; s<numNodes; s++){ 
 
       t = nodeList[s].parent;
-      maxfl = ff->max_flow(s,t);
-           
+      maxfl = ff->max_flow(s,t);      
       nodeList[s].mincap = maxfl;
 
       for ( i=0; i<numNodes; i++ ){
