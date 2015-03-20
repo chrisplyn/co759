@@ -1,9 +1,13 @@
 /****************************************************************************/
 /*                                                                          */
 /*              CO759: LP interface for HW2, Subtour TSP Solver             */
-/*              Date:  January 27, 2015                                     */
+/*                                                  						*/
 /*                                                                          */
 /****************************************************************************/
+
+
+#ifndef __LP_H__
+#define __LP_H__
 
 #include <cplex.h>
 
@@ -27,3 +31,5 @@ int CO759lp_setbnd (CO759lp *lp, int col, char lower_or_upper, double bnd);
 int CO759lp_opt (CO759lp *lp, int *infeasible);
 int CO759lp_objval (CO759lp *lp, double *obj);
 int CO759lp_x (CO759lp *lp, double *x);
+
+#endif

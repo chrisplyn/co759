@@ -5,7 +5,6 @@
 #include "FordFulkerson.h"
 
 
-
 FordFulkerson::FordFulkerson(const Graph& g):n(g.get_num_nodes()),numEdges(g.get_num_edges()),
 							edgeList(g.get_edgeList()),capList(g.get_capList()){
 	residualEdges = 0;
@@ -90,20 +89,19 @@ int FordFulkerson::bfs(int start, int target)
 	return color[target]==BLACK;
 }
 
-// Ford-Fulkerson Algorithm
-
+// implementation of Ford-Fulkerson Algorithm
 double FordFulkerson::max_flow(int source, int sink)
 {
 	int i,u;
 	double max_flow;
 
-// Initialize empty flow.
+	// Initialize empty flow.
 	max_flow = 0.0;
 	for (i=0; i<residualEdges; i++)
 	  edgeTab[i].flow=0.0;
 
-// While there exists an augmenting path,
-// increment the flow along this path.
+	// While there exists an augmenting path,
+	// increment the flow along this path.
 	while (bfs(source,sink))
 	{
   		// Determine the amount by which we can increment the flow.
@@ -126,7 +124,7 @@ double FordFulkerson::max_flow(int source, int sink)
 	// No more augmenting paths, so cut is based on reachability from last BFS.
 	//set cut set of S and T
 	for (int u=0; u<n; u++){
-		nodeList[u].s_side = false; //must do!
+		nodeList[u].s_side = false; //must do! reset s_side to false
 		if(color[u]==BLACK){
 		  nodeList[u].s_side = true; //if 
 		}

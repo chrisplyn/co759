@@ -19,7 +19,7 @@ void RelaxedLP::destruct(){
         CO759lp_free(lp);
         delete lp;
     }
-
+    
     if(adjacencyList != 0){
         delete [] adjacencyList;
     }
@@ -185,9 +185,8 @@ int RelaxedLP::init_relaxed_lp()
 		exit(1);
 	}
 
-
     int rval = 0, i, j;
-    double  obj[1], lb[1], ub[1];
+    double  obj[1], lb[1];
     int     cmatbeg[1], cmatind[2];
     double  cmatval[2];
 
@@ -225,13 +224,38 @@ int RelaxedLP::init_relaxed_lp()
     return rval;
 }
 
+int RelaxedLP::get_num_edges(){
+	return numEdges;
+}
 
-double RelaxedLP::get_relaxted_lp_objval(){
+int RelaxedLP::get_num_nodes(){
+	return numNodes;	
+}
+
+int const * RelaxedLP::get_edgeList(){
+	return edgeList;	
+}
+
+double RelaxedLP::get_relaxed_lp_objval(){
     return obj_val;
 }
     
+double * RelaxedLP::get_relaxed_lp_sol(){
+	if (lp_sol == 0) {
+		destruct();
+		printf("MUST CALL SOLVE_RELAXED_LP first!!!!!!!!");
+		exit(3);
+	}	
+	return lp_sol;    
+}    
     
-double* RelaxedLP::get_relaxed_lp_sol(){
+ 
+CO759lp* RelaxedLP::get_relaxed_lp(){
+    return lp;
+}
+    
+    
+int RelaxedLP::solve_relaxed_lp(){
     
     int infeasible;
     int rval = CO759lp_opt(lp, &infeasible);
@@ -252,7 +276,7 @@ double* RelaxedLP::get_relaxed_lp_sol(){
     	}
 	}
     
-    rval = CO759lp_write (lp, "subtour.lp");
+    rval = CO759lp_write (lp, "matching.lp");
     if (rval) {
 	   fprintf (stderr, "CO759lp_write failed\n"); 
     }
@@ -262,10 +286,30 @@ double* RelaxedLP::get_relaxed_lp_sol(){
         fprintf(stderr, "CO759lp_x failed\n");
     }
     
+    for (int j = 0; j < numEdges; j++) {
+		if (lp_sol[j] > LP_EPSILON) 
+         printf ("%d %d %f\n", edgeList[2*j], edgeList[2*j+1], lp_sol[j]); 
+    }
+    
     rval = CO759lp_objval(lp, &obj_val);
     if (rval) {
         fprintf (stderr, "CO759lp_objval failed\n"); 
     }
     
-    return lp_sol;
+    return rval;
+}
+
+
+void RelaxedLP::print_relaxed_lp_sol(){
+	if (lp_sol == 0) {
+		destruct();
+		printf("MUST CALL SOLVE_RELAXED_LP first!!!!!!!!");
+		exit(4);
+	}	
+    
+    for (int j = 0; j < numEdges; j++) {
+		if (lp_sol[j] > LP_EPSILON) 
+         printf ("%d %d %f\n", edgeList[2*j], edgeList[2*j+1], lp_sol[j]); 
+    }
+    fflush (stdout);
 }

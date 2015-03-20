@@ -10,12 +10,8 @@ GomoryHu::~GomoryHu(){
 node * GomoryHu::construct_GH_tree(){
 
    node * nodeList = ff->get_nodeList();
-   
    int i,s,t;
    double maxfl;
-   // for(i=0;i<numNodes;i++){
-   // 	nodeList[i].parent = &(nodeList[0]);
-   // }
 
    for ( s=1; s<numNodes; s++){ 
 
