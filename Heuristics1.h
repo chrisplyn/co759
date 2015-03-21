@@ -7,16 +7,16 @@
 class Heuristics1
 {
 private:
-	std::vector<IntPair> const * const adjacencyList;
-	CO759lp *lp;
-	Graph *g;
-	std::vector<int> findGamma(Component &);	
-	int add_constraint_util(std::vector<int>&, int);
+	// std::vector<IntPair> const * const adjacencyList;
+	// CO759lp *lp;
+	// Graph *g;
+	static std::vector<int> findGamma(Component &, RelaxedLP &);	
+	static int add_constraint_util(std::vector<int>&, int, RelaxedLP &);
 	static int min(int, int);
 public:
-	Heuristics1(RelaxedLP &, Graph &);
-	~Heuristics1();
-	void add_constraint();
+	// Heuristics1(RelaxedLP &, Graph &);
+	// ~Heuristics1();
+	static void add_constraint(RelaxedLP &, Graph& );
 	
 };
 

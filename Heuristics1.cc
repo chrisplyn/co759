@@ -3,14 +3,18 @@
 #include <algorithm>
 using namespace std;
 
-Heuristics1::Heuristics1(RelaxedLP &rlp, Graph &g):adjacencyList(rlp.get_adjacencyList()),g(&g){
-	lp = rlp.get_relaxed_lp();
-}
+// Heuristics1::Heuristics1(RelaxedLP &rlp, Graph &g):adjacencyList(rlp.get_adjacencyList()),g(&g){
+// 	lp = rlp.get_relaxed_lp();
+// }
 
 
-std::vector<int> Heuristics1::findGamma(Component &c){	
-	std::vector<int> gamma;
-		
+/*
+* find set gamma of connected component c
+*/
+std::vector<int> Heuristics1::findGamma(Component &c, RelaxedLP &rlp){	
+	const * const adjacencyList = rlp.get_adjacencyList();
+
+	std::vector<int> gamma;		
 	for(auto it1=c.begin(); it1!=c.end(); it1++){
 				
 		for(auto it2=adjacencyList[*it1].begin(); it2!=adjacencyList[*it1].end();it2++){
@@ -26,8 +30,9 @@ std::vector<int> Heuristics1::findGamma(Component &c){
 /*
  *gamma is the set of index of the edges in delta(S), size = min(|S|,|V\S|) 
 */
-int Heuristics1::add_constraint_util(std::vector<int>& gamma, int size)
+int Heuristics1::add_constraint_util(std::vector<int>& gamma, int size, RelaxedLP &rlp)
 {		
+	CO759lp *lp = rlp.get_relaxed_lp();
     int rval = 0, newrows = 1, newnz, *rmatind, gammacount;
     int rmatbeg[1];
     char sense[1];
@@ -60,18 +65,18 @@ CLEANUP:
 
 
 
-void Heuristics1::add_constraint()
+void Heuristics1::add_constraint(RelaxedLP &rlp, Graph& g)
 {
     /* Run through all component in components*/
     
-	std::vector<Component> odd_cut_components = g->find_odd_cut_set();
+	std::vector<Component> odd_cut_components = g.find_odd_cut_set();
 	
-	int n = g->get_num_nodes(),component_size;
+	int n = g.get_num_nodes(),component_size;
     int rval=0;
     for(auto it=odd_cut_components.begin();it!=odd_cut_components.end();++it){
 		component_size = (*it).size();	
-		std::vector<int> gamma = findGamma(*it); 		
-		rval = add_constraint_util(gamma,min(component_size,n-component_size));    
+		std::vector<int> gamma = findGamma(*it, rlp); 		
+		rval = add_constraint_util(gamma,min(component_size,n-component_size),rlp);    
 	    
 	    if(rval){
 	       fprintf(stderr, "add_constraint failed"); return;
@@ -83,4 +88,4 @@ int Heuristics1::min(int x, int y){
 	return x<y ? x : y;
 }
 
-Heuristics1::~Heuristics1(){}
+// Heuristics1::~Heuristics1(){}
