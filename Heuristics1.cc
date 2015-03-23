@@ -12,7 +12,7 @@ using namespace std;
 * find set gamma of connected component c
 */
 std::vector<int> Heuristics1::findGamma(Component &c, RelaxedLP &rlp){	
-	const * const adjacencyList = rlp.get_adjacencyList();
+	const std::vector<IntPair> * const adjacencyList = rlp.get_adjacencyList();
 
 	std::vector<int> gamma;		
 	for(auto it1=c.begin(); it1!=c.end(); it1++){

@@ -17,7 +17,6 @@ public:
 	// Heuristics1(RelaxedLP &, Graph &);
 	// ~Heuristics1();
 	static void add_constraint(RelaxedLP &, Graph& );
-	
 };
 
 #endif

@@ -100,9 +100,8 @@ int main(int ac, char **av)
 	//rlp.print_relaxed_lp_sol();
 	
 	Graph g_star(rlp);
-	Heuristics1 h1(rlp, g_star);
+	Heuristics1::add_constraint(rlp, g_star);
 	
-	h1.add_constraint();	
 	rval = rlp.solve_relaxed_lp();
 	//rlp.print_relaxed_lp_sol();	
 		
