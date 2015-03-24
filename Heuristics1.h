@@ -11,7 +11,6 @@ public:
 	static int add_constraint_util(Component&, int, RelaxedLP &);
 	static std::vector<int> findGamma(Component &, RelaxedLP &);
 	static void add_constraint(RelaxedLP &, Graph& );
-	
 };
 
 #endif

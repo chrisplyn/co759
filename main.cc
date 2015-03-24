@@ -109,7 +109,16 @@ int main(int ac, char **av)
 	rlp.print_relaxed_lp_sol();
 	cout << "number of iterations is " << i << endl;
 	
+<<<<<<< HEAD
 
+=======
+	Graph g_star(rlp);
+	Heuristics1::add_constraint(rlp, g_star);
+	
+	rval = rlp.solve_relaxed_lp();
+	//rlp.print_relaxed_lp_sol();	
+		
+>>>>>>> 04f1442dd8cc8215d62770105542dd759ec6a3f5
 	
 	
 	//~ int i = 0;
