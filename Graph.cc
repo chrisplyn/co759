@@ -125,16 +125,12 @@ void Graph::convert_g_star(){
 
 
 		for (i = 0,j=0; i < G_numEdges; i++) {
-			//~ if (lp_sol[i] > LP_EPSILON) 
-			 //~ printf ("%d %d %f\n", G_edgeList[2*i], G_edgeList[2*i+1], lp_sol[i]); 
-		//~ }
-		
-		
+
+			
 	  	if (lp_sol[i] > LP_EPSILON){			
 			origin =  G_edgeList[2*i];
 			dest = G_edgeList[2*i+1];			
 			
-			//printf ("%d %d %f\n", G_edgeList[2*i], G_edgeList[2*i+1], lp_sol[i]);
 			
 			edgeList[4*j] = origin;
 			edgeList[4*j+1] = dest;

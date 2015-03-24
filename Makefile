@@ -1,5 +1,5 @@
-CPLEX_LIB = /Users/VeniceX/Applications/IBM/ILOG/CPLEX_Studio1261/cplex/lib/x86-64_osx/static_pic/libcplex.a
-CPLEX_INCLUDE = /Users/VeniceX/Applications/IBM/ILOG/CPLEX_Studio1261/cplex/include/ilcplex
+CPLEX_LIB = /opt/ibm/ILOG/CPLEX_Studio1261/cplex/lib/x86-64_linux/static_pic/libcplex.a
+CPLEX_INCLUDE = /opt/ibm/ILOG/CPLEX_Studio1261/cplex/include/ilcplex
 
 CXX = g++
 CXXFLAGS = -O3 -g -Wall -MMD -std=c++11 -I$(CPLEX_INCLUDE)

@@ -9,11 +9,7 @@ using namespace std;
 */
 std::vector<int> Heuristics1::findGamma(Component &c, RelaxedLP &rlp){	
 	const std::vector<IntPair> * const adjacencyList = rlp.get_adjacencyList();
-<<<<<<< HEAD
 	int edge_index;
-=======
-
->>>>>>> 04f1442dd8cc8215d62770105542dd759ec6a3f5
 	std::vector<int> gamma;		
 	for(auto it1=c.begin(); it1!=c.end(); it1++){			
 		for(auto it2=adjacencyList[*it1].begin(); it2!=adjacencyList[*it1].end();it2++){
