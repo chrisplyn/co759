@@ -22,6 +22,7 @@ public:
 	static void find_connected_components(int, const set *, bool *, std::vector<Component>& );
 	static void print_adjacencyList(int , const set *);
 	static void print_odd_component(const std::vector<Component> &);
+	static void print_component(const Component &);
 };
 
 

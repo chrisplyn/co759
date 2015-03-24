@@ -96,30 +96,38 @@ int main(int ac, char **av)
 		return 0;
 	}
 	
-	rval = rlp.solve_relaxed_lp();
-	//rlp.print_relaxed_lp_sol();
+	int i = 0;
+	while(i<100){
+		i++;
+		rval = rlp.solve_relaxed_lp();		
+		Graph g_star(rlp);
+		g_star.construct_g_star();		
+		if(g_star.check_integrality()) break; 
+		Heuristics1::add_constraint(rlp,g_star);		
+	}	
+	cout << "final lp solution is"  << endl;
+	rlp.print_relaxed_lp_sol();
+	cout << "number of iterations is " << i << endl;
 	
-	Graph g_star(rlp);
-	Heuristics1 h1(rlp, g_star);
-	
-	h1.add_constraint();	
-	rval = rlp.solve_relaxed_lp();
-	//rlp.print_relaxed_lp_sol();	
-		
+
 	
 	
-	//DFS::print_odd_component(odd_cut_components);
+	//~ int i = 0;
+	//~ while(true){
+		//~ i++;
+		//~ rval = rlp.solve_relaxed_lp();		
+		//~ Graph g_star(rlp);		
+		//~ g_star.construct_g_star();
+		//~ if(g_star.check_integrality()) break; 
+		//~ g_star.convert_g_star();		
+		//~ PadbergRao pr(g_star);
+		//~ pr.add_constraint(rlp);			
+	//~ }	
+	//~ cout << "final lp solution is"  << endl;
+	//~ rlp.print_relaxed_lp_sol();
+	//~ cout << "number of iterations is " << i << endl;
 	
 	
 	
-	//~ RelaxedLP rlp;
-	//~ //string filename = "undirected_graph";
-	//~ Graph g(rlp);
-	//~ g.read_input_file(filename);
-	//~ PadbergRao pr(g);
-	//~ //pr.print_gh_tree();
-	//~ cout << endl;
-	//~ // cout << endl;
-	//~ //pr.remove_edge();
 
 }

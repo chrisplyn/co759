@@ -286,10 +286,10 @@ int RelaxedLP::solve_relaxed_lp(){
         fprintf(stderr, "CO759lp_x failed\n");
     }
     
-    for (int j = 0; j < numEdges; j++) {
-		if (lp_sol[j] > LP_EPSILON) 
-         printf ("%d %d %f\n", edgeList[2*j], edgeList[2*j+1], lp_sol[j]); 
-    }
+    //~ for (int j = 0; j < numEdges; j++) {
+		//~ if (lp_sol[j] > LP_EPSILON) 
+         //~ printf ("%d %d %f\n", edgeList[2*j], edgeList[2*j+1], lp_sol[j]); 
+    //~ }
     
     rval = CO759lp_objval(lp, &obj_val);
     if (rval) {
@@ -302,11 +302,11 @@ int RelaxedLP::solve_relaxed_lp(){
 
 void RelaxedLP::print_relaxed_lp_sol(){
 	if (lp_sol == 0) {
-		destruct();
+		//destruct();
 		printf("MUST CALL SOLVE_RELAXED_LP first!!!!!!!!");
-		exit(4);
+		return;
 	}	
-    
+    printf("the relaxed lp solution is:\n");
     for (int j = 0; j < numEdges; j++) {
 		if (lp_sol[j] > LP_EPSILON) 
          printf ("%d %d %f\n", edgeList[2*j], edgeList[2*j+1], lp_sol[j]); 

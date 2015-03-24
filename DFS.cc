@@ -40,11 +40,28 @@ void DFS::print_odd_component(const std::vector<Component> &components){
 	  std::cout << "components cannot be empty!!!!!!!!!!" << std::endl;
 	  return;
     } 
-    for (auto it1=components.begin();it1!=components.end();++it1){              
+    
+    std::cout << "number of component is " << components.size() << std::endl;
+    for (auto it1=components.begin();it1!=components.end();++it1){		              
         for(auto it2=it1->begin(); it2!=it1->end(); it2++){
             std::cout << *it2 << " ";
         }
         std::cout << std::endl;  
    	}
 }
+
+
+void DFS::print_component(const Component &c){
+    if(c.empty()){
+	  std::cout << "c cannot be empty!!!!!!!!!!" << std::endl;
+	  return;
+    } 
+                
+    for(auto it=c.begin(); it!=c.end(); it++){
+        std::cout << *it << " ";
+    }
+    std::cout << std::endl;    	
+}
+
+
 

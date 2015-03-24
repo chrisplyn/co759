@@ -52,21 +52,25 @@ class Graph
 {
 private:
 	/****************
-	*store graph data 	
+	*Ford-Fulkerson & Padberg-Rao 	
 	****************/
 	int n;  // number of nodes
 	int numEdges;	//number of edges in original graph
 	int *edgeList; 	
 	double *capList;	//store capacity of each edge
+	
+	
+	/****************
+	*Heuristic 1	
+	****************/
 	set *adjacencyList;
 	RelaxedLP *rlp;
 	double *lp_sol;
 	std::vector<Component> components;
 	bool *visited;
 	int G_numEdges ;
-	//bool check_integrality();
-	void construct_g_star();
 	void destruct();
+	
 	/****************
 	*graph utility functions 	
 	****************/
@@ -77,13 +81,13 @@ public:
 	~Graph();
 	int get_num_nodes() const; //return number of nodes in the graph
 	int get_num_edges() const; //return number of edges in the graph
-	//void read_input_file(const std::string &); //contruct graph from input file
+	void convert_g_star(); //contruct graph from input file
 	bool check_integrality();
 	int const * const get_edgeList() const;	// return a const ptr to edgeList, edgeList is not allowed to be modified
 										// const applies to the item to its left 
 										// or if there is no item to its left, the item to its right)
+	void construct_g_star();
 	double const * const get_capList() const;	
-	
 	std::vector<Component> find_odd_cut_set();
 };	
 

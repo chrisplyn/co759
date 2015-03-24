@@ -2,6 +2,7 @@
 #define __PADBERGRAO_H__
 
 #include "GomoryHu.h"
+#include "Heuristics1.h"
 #include <vector>
 #include <unordered_set>
 
@@ -22,12 +23,13 @@ private:
 	void construct_gh_tree_adjacencyList();
 	//void find_Component();
 	//void print_Component();
+	void add_constraint_util(std::vector<Component>& , RelaxedLP&);
 
 public:
 	PadbergRao(Graph &);
 	~PadbergRao();
-	void remove_edge();
+	void add_constraint(RelaxedLP&);	
 	void print_gh_tree();
-	//void print__gh_tree_adjacencyList();
+	
 };
 #endif
