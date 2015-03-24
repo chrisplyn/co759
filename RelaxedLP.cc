@@ -276,10 +276,10 @@ int RelaxedLP::solve_relaxed_lp(){
     	}
 	}
     
-    rval = CO759lp_write (lp, "matching.lp");
-    if (rval) {
-	   fprintf (stderr, "CO759lp_write failed\n"); 
-    }
+    //~ rval = CO759lp_write (lp, "matching.lp");
+    //~ if (rval) {
+	   //~ fprintf (stderr, "CO759lp_write failed\n"); 
+    //~ }
     
     rval = CO759lp_x(lp, lp_sol);
     if (rval) {

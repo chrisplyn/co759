@@ -3,7 +3,7 @@
 
 Graph::Graph(RelaxedLP &rlp):rlp(&rlp),n(rlp.get_num_nodes()),numEdges(0),
 			edgeList(0),capList(0),adjacencyList(0),G_numEdges(rlp.get_num_edges()),
-			lp_sol(rlp.get_relaxed_lp_sol()),visited(0){
+			lp_sol(rlp.get_relaxed_lp_sol()),visited(0), G_edgeList(rlp.get_edgeList()){
 }
 
 
@@ -45,38 +45,52 @@ bool Graph::check_integrality(){
 			return false;
 		}
 	}
-	//std::cout << "a matching is found!!!!!!" << std::endl;
+	std::cout << "a matching is found!!!!!!" << std::endl;
 	return true;	
 }
+
 
 void Graph::construct_g_star(){
 	/*
 	this function constructs G* based on X* 
 	*/
-	//~ std::cout << " ==== " << "contruct graph g_star based on lp solution x_star" << "====" << std::endl;
-	//~ std::cout << std::endl;
-	
-	int const * G_edgeList = rlp->get_edgeList();
-	int origin, dest;	
-	if(adjacencyList == 0) adjacencyList = new set[n]; 
-	if(visited == 0) visited = new bool[n]();
+	destruct();
+	adjacencyList = new set[n]; 
+	visited = new bool[n]();
+	if(numEdges != 0) numEdges = 0;
+	construct_adjacencyList(LP_EPSILON, numEdges, G_numEdges, G_edgeList, lp_sol, adjacencyList);
+	std::cout << "g_star has " << numEdges << " edges" << std::endl;
+}
 
+
+void Graph::construct_adjacencyList(double rhs, int& numEdges, int G_numEdges, const int* G_edgeList, double *lp_sol, set *adjacencyList){
+	int origin, dest;
 	for (int j = 0; j < G_numEdges; j++) {
-		if (lp_sol[j] > LP_EPSILON){			
+		if (lp_sol[j] > rhs){			
 			origin =  G_edgeList[2*j];
 			dest = G_edgeList[2*j+1];			
 			adjacencyList[origin].insert(dest);
 			adjacencyList[dest].insert(origin);
 			numEdges++; 			
 		}
-	}
-	//std::cout << " ==== " << "g_star has " << numEdges << " edges" << " ==== " << std::endl;
-	//DFS::print_adjacencyList(n, adjacencyList);
+	}		
 }
 
 
+void Graph::construct_g_star_2(){
+	destruct();
+	adjacencyList = new set[n]; 
+	visited = new bool[n]();
+	if(numEdges != 0) numEdges = 0;
+	construct_adjacencyList(0.3, numEdges, G_numEdges, G_edgeList, lp_sol, adjacencyList);
+	std::cout << "g_star_2 has " << numEdges << " edges" << std::endl;
+}
+
+
+
+
 /*
- * Based lp solution x_star, 
+ * Based on lp solution x_star, 
  */ 
 std::vector<Component> Graph::find_odd_cut_set(){
 
@@ -85,19 +99,12 @@ std::vector<Component> Graph::find_odd_cut_set(){
 	if(!components.empty()) components.clear();		
 	for(int j=0; j<n;j++){
 		visited[j] = false;
-	}
-	
-	//~ std::cout << " ==== " << "perform depth first search on g_star" << " ==== " << std::endl;
-	//~ std::cout << " ==== " << "find connected components of odd size on g_star" << " ==== " << std::endl;
-
+	}	
 	DFS::find_connected_components(n, adjacencyList, visited, components);
-	
-	//std::cout << " ==== " << "g_star has " << components.size() << " connected components" << std::endl;
-	
+		
 	if(components.size()!=1){ 		
 		for (auto it=components.begin();it!=components.end();++it){    			   
 			if((*it).size() % 2 != 0){
-				//DFS::print_component(*it); 
 				odd_cut_set.push_back(*it);						
 			}    
 		}
@@ -110,10 +117,8 @@ std::vector<Component> Graph::find_odd_cut_set(){
 void Graph::convert_g_star(){
 	
 	int origin,dest,i,j;
-	int const * G_edgeList = rlp->get_edgeList();
+	//int const * G_edgeList = rlp->get_edgeList();
  	
-	//std::cout << " ==== " << "g_star has " << numEdges << " edges" << " ==== " << std::endl;
-
 	try{
   		edgeList = new int[4*numEdges];
   		capList = new double[2*numEdges];
@@ -123,15 +128,12 @@ void Graph::convert_g_star(){
 	  	exit(2);
 	}
 
-
 		for (i = 0,j=0; i < G_numEdges; i++) {
-
-			
+		
 	  	if (lp_sol[i] > LP_EPSILON){			
 			origin =  G_edgeList[2*i];
 			dest = G_edgeList[2*i+1];			
-			
-			
+						
 			edgeList[4*j] = origin;
 			edgeList[4*j+1] = dest;
 			edgeList[4*j+2] = dest;
@@ -142,7 +144,6 @@ void Graph::convert_g_star(){
 		}
 	}
 	numEdges = 2*numEdges;	
-
 }		
 	
 

@@ -69,11 +69,12 @@ private:
 	std::vector<Component> components;
 	bool *visited;
 	int G_numEdges ;
-	void destruct();
-	
+	int const * G_edgeList;
 	/****************
 	*graph utility functions 	
 	****************/
+	void destruct();
+	static void construct_adjacencyList(double , int& , int , const int*, double *, set *);
 
 public:
 
@@ -87,6 +88,7 @@ public:
 										// const applies to the item to its left 
 										// or if there is no item to its left, the item to its right)
 	void construct_g_star();
+	void construct_g_star_2();
 	double const * const get_capList() const;	
 	std::vector<Component> find_odd_cut_set();
 };	

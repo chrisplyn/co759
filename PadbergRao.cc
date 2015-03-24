@@ -43,7 +43,7 @@ void PadbergRao::construct_gh_tree_adjacencyList(){
 
 
 
-void PadbergRao::add_constraint(RelaxedLP &rlp){
+void PadbergRao::add_constraint(RelaxedLP &rlp, int &iter){
 	int i,origin,destination;
 	
 	for(i=0; i<numNodes; i++){
@@ -73,33 +73,33 @@ void PadbergRao::add_constraint(RelaxedLP &rlp){
 			break;
 		}	
 		
-		add_constraint_util(components, rlp);
-	
+		add_constraint_util(components, rlp);		
         // restore original adjacency list
 		adjacencyList[origin].insert(destination);
         adjacencyList[destination].insert(origin);
 	}
+	iter++;
 }
 
 
 void PadbergRao::add_constraint_util(std::vector<Component>& components, RelaxedLP& rlp){
-		unsigned int tmp = 0,i=0;	
-		for (auto it=components.begin();it!=components.end();++it){    			   
-			if((*it).size() % 2 != 0 && (*it).size() != 1){			
-				if(tmp < (*it).size()){
-					i++;	 
-				}	 
-			}else{
-				return;
-			}    
-		}
-		
-		std::vector<int> gamma = Heuristics1::findGamma(components[i-1], rlp); 	
-		int rval = Heuristics1::add_constraint_util(gamma,components[i-1].size(),rlp);    
-	    
-		if(rval){
-			fprintf(stderr, "add_constraint failed"); return;
-		}
+	unsigned int tmp = 0,i=0;	
+	for (auto it=components.begin();it!=components.end();++it){    			   
+		if((*it).size() % 2 != 0 && (*it).size() != 1){			
+			if(tmp < (*it).size()){
+				i++;	 
+			}	 
+		}else{
+			return;
+		}    
+	}
+	
+	std::vector<int> gamma = Heuristics1::findGamma(components[i-1], rlp); 	
+	int rval = Heuristics1::add_constraint_util(gamma,components[i-1].size(),rlp);    
+    
+	if(rval){
+		fprintf(stderr, "add_constraint failed"); return;
+	}
 			
 }
 

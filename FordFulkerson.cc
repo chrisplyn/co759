@@ -177,8 +177,8 @@ int FordFulkerson::tailThenHead(const void* xin, const void* yin)
 void FordFulkerson::construct_residual_graph(){
 
 	if(edgeList==0 || capList==0){
-		printf("reading graph from file failed %d\n",__LINE__);
-		exit(5);
+		printf("Ford-Fulkerson::reading graph from g_star failed %d\n",__LINE__);
+		return;
 	}
 
 	int workingEdges=0, tail, head, i, j;

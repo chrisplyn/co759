@@ -4,6 +4,7 @@
 #include "RelaxedLP.h"
 #include <getopt.h>
 #include "Heuristics1.h"
+#include <math.h>
 using namespace std;
 
 static char *fname = (char *) NULL;
@@ -96,36 +97,48 @@ int main(int ac, char **av)
 		return 0;
 	}
 	
-	int i = 0;
-	while(i<100){
+	int i = 0, h1_iter=0, h2_iter=0, pr_iter=0, ind=0;
+	double lp_val=0.0, tmp;
+	
+	while(true){
 		i++;
-		rval = rlp.solve_relaxed_lp();		
-		Graph g_star(rlp);
-		g_star.construct_g_star();		
+		rval = rlp.solve_relaxed_lp();
+		//~ tmp = lp_val;
+		//~ lp_val = rlp.get_relaxed_lp_objval();
+		//~ 
+		//~ if(abs(tmp-lp_val) < 1.0) ind++;
+		//~ else ind = 0;
+			
+		Graph g_star(rlp);			
 		if(g_star.check_integrality()) break; 
-		Heuristics1::add_constraint(rlp,g_star);		
+		
+		if(h1_iter<=50 ) {
+			g_star.construct_g_star();
+			rval = Heuristics1::add_constraint(rlp,g_star,h1_iter);		
+		}
+		
+		if(rval || h1_iter>50){
+			
+			if(h2_iter <= 150){
+				printf("no odd component has been found on g_star, need to do heuristics2\n");
+				g_star.construct_g_star_2();			
+				rval = Heuristics1::add_constraint(rlp,g_star,h2_iter);
+			}
+			if(rval || h2_iter>150){
+				 printf("no odd component has been found on g_star_2, need to do Padberg-Rao\n");
+				 g_star.construct_g_star();
+				 g_star.convert_g_star();
+				 PadbergRao pr(g_star);
+				 pr.add_constraint(rlp,pr_iter);	
+			}
+		}
 	}	
-	cout << "final lp solution is"  << endl;
-	rlp.print_relaxed_lp_sol();
-	cout << "number of iterations is " << i << endl;
+	//cout << "final lp solution is"  << endl;
+	//rlp.print_relaxed_lp_sol();
+	cout << "number of total iterations is " << i << endl;
 	
-	
-	//~ int i = 0;
-	//~ while(true){
-		//~ i++;
-		//~ rval = rlp.solve_relaxed_lp();		
-		//~ Graph g_star(rlp);		
-		//~ g_star.construct_g_star();
-		//~ if(g_star.check_integrality()) break; 
-		//~ g_star.convert_g_star();		
-		//~ PadbergRao pr(g_star);
-		//~ pr.add_constraint(rlp);			
-	//~ }	
-	//~ cout << "final lp solution is"  << endl;
-	//~ rlp.print_relaxed_lp_sol();
-	//~ cout << "number of iterations is " << i << endl;
-	
-	
-	
+	cout << "number of h1 iteration is " << h1_iter << endl;
+	cout << "number of h2 iteration is " << h2_iter << endl;
+	cout << "number of Padberg-Rao iterations is " << pr_iter << endl;
 
 }
