@@ -19,10 +19,9 @@ private:
 	set *adjacencyList;
 	bool* visited;
 	std::vector<Component> components;
-	//void dfs(int);
+	const Bimap &g_prime_node_map;
+	
 	void construct_gh_tree_adjacencyList();
-	//void find_Component();
-	//void print_Component();
 	void add_constraint_util(std::vector<Component>& , RelaxedLP&);
 
 public:

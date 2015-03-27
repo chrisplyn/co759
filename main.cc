@@ -1,5 +1,6 @@
 
 #include "Graph.h"
+#include "util.h"
 #include "PadbergRao.h"
 #include "RelaxedLP.h"
 #include <getopt.h>
@@ -96,49 +97,58 @@ int main(int ac, char **av)
 		cout << "initializing subtour problem failed" << endl;
 		return 0;
 	}
+	//~ int pr_iter = 0;
+	//~ 
+	//~ while(true){
+		//~ rval = rlp.solve_relaxed_lp();
+		//~ //rlp.print_relaxed_lp_sol();
+		//~ Graph g_star(rlp);
+		//~ if(g_star.check_integrality()) break;
+		//~ g_star.construct_g_star();
+		//~ g_star.construct_g_star_prime();
+		//~ PadbergRao pr(g_star);
+		//~ pr.add_constraint(rlp,pr_iter);	
+	//~ }
+	//~ rlp.print_relaxed_lp_sol();
+	//~ cout << "number of Padberg-Rao iterations is " << pr_iter << endl;
+	
 	
 	int i = 0, h1_iter=0, h2_iter=0, pr_iter=0, ind=0;
-	double lp_val=0.0, tmp;
+	
+	double szeit = CO759_zeit ();
 	
 	while(true){
 		i++;
 		rval = rlp.solve_relaxed_lp();
-		//~ tmp = lp_val;
-		//~ lp_val = rlp.get_relaxed_lp_objval();
-		//~ 
-		//~ if(abs(tmp-lp_val) < 1.0) ind++;
-		//~ else ind = 0;
 			
 		Graph g_star(rlp);			
 		if(g_star.check_integrality()) break; 
 		
-		if(h1_iter<=50 ) {
+		if(h1_iter<=0 ) {
 			g_star.construct_g_star();
 			rval = Heuristics1::add_constraint(rlp,g_star,h1_iter);		
 		}
 		
-		if(rval || h1_iter>50){
+		if(rval || h1_iter>0){
 			
-			if(h2_iter <= 150){
+			if(h2_iter <= 0){
 				printf("no odd component has been found on g_star, need to do heuristics2\n");
 				g_star.construct_g_star_2();			
 				rval = Heuristics1::add_constraint(rlp,g_star,h2_iter);
 			}
-			if(rval || h2_iter>150){
+			if(rval || h2_iter>0){
 				 printf("no odd component has been found on g_star_2, need to do Padberg-Rao\n");
 				 g_star.construct_g_star();
-				 g_star.convert_g_star();
+				 g_star.construct_g_star_prime();
 				 PadbergRao pr(g_star);
 				 pr.add_constraint(rlp,pr_iter);	
 			}
 		}
 	}	
-	//cout << "final lp solution is"  << endl;
-	//rlp.print_relaxed_lp_sol();
-	cout << "number of total iterations is " << i << endl;
-	
+
+	cout << "number of total iterations is " << i << endl;	
 	cout << "number of h1 iteration is " << h1_iter << endl;
 	cout << "number of h2 iteration is " << h2_iter << endl;
 	cout << "number of Padberg-Rao iterations is " << pr_iter << endl;
-
+	printf ("Running Time: %.2f seconds\n", CO759_zeit() - szeit);
 }

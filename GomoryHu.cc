@@ -1,6 +1,6 @@
 #include "GomoryHu.h"
 
-GomoryHu::GomoryHu(const Graph& g):numNodes(g.get_num_nodes()),ff(new FordFulkerson(g)){
+GomoryHu::GomoryHu(const Graph& g):numNodes(g.get_g_prime_num_nodes()),ff(new FordFulkerson(g)){
 }
 
 GomoryHu::~GomoryHu(){

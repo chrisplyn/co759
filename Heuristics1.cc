@@ -66,10 +66,8 @@ int Heuristics1::add_constraint(RelaxedLP &rlp, Graph& g, int &iter)
 {
     /* Run through all component in components*/
     
-    //printf("==== run heuristics1 on g_star ===== \n");
 	std::vector<Component> odd_cut_components = g.find_odd_cut_set();
-	
-	
+		
 	if(odd_cut_components.empty()){
 	   //printf("no odd component has been found\n");
 	   return 1;
@@ -88,8 +86,7 @@ int Heuristics1::add_constraint(RelaxedLP &rlp, Graph& g, int &iter)
 			sum += lp_sol[*it1];	
 		}
 			
-		if(sum > (double((*it).size())-1.0)/2.0+LP_EPSILON){
-				
+		if(sum > (double((*it).size())-1.0)/2.0+0.00001){				
 			rval = add_constraint_util(gamma,(*it).size(),rlp);  
 			flag = true;  
 	    }
@@ -98,6 +95,7 @@ int Heuristics1::add_constraint(RelaxedLP &rlp, Graph& g, int &iter)
 	       fprintf(stderr, "add_constraint failed"); return 1;
 	    }
 	}
+	
 	iter++;
 	if(flag){
 		return 0;

@@ -5,7 +5,7 @@
 #include "FordFulkerson.h"
 
 
-FordFulkerson::FordFulkerson(const Graph& g):n(g.get_num_nodes()),numEdges(g.get_num_edges()),
+FordFulkerson::FordFulkerson(const Graph& g):n(g.get_g_prime_num_nodes()),numEdges(g.get_g_prime_num_edges()),
 							edgeList(g.get_edgeList()),capList(g.get_capList()){
 	residualEdges = 0;
 	try{
@@ -21,7 +21,8 @@ FordFulkerson::FordFulkerson(const Graph& g):n(g.get_num_nodes()),numEdges(g.get
 	  	exit(1);
 	}
 
-	construct_residual_graph();
+	construct_residual_graph();	
+
 	for(int i=0; i<n;i++)
 		nodeList[i].id = i;
 }

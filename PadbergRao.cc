@@ -2,7 +2,9 @@
 #include "DFS.h"
 #include <iomanip> 
 
-PadbergRao::PadbergRao(Graph &g):gh(new GomoryHu(g)),numNodes(g.get_num_nodes()){
+PadbergRao::PadbergRao(Graph &g):gh(new GomoryHu(g)),numNodes(g.get_g_prime_num_nodes()),
+	g_prime_node_map(g.get_g_prime_node_map()){
+		
 	nl = gh->construct_GH_tree();
 	std::sort(nl,nl+numNodes);	//sort Gomory-Hu tree edges according to its capacity
 
@@ -73,13 +75,22 @@ void PadbergRao::add_constraint(RelaxedLP &rlp, int &iter){
 			break;
 		}	
 		
-		add_constraint_util(components, rlp);		
+		for(auto it1 = components.begin();it1 != components.end(); it1++){
+			for(auto it2 = it1->begin(); it2 != it1->end(); it2++){
+				*it2 = g_prime_node_map.get(*it2);
+			}
+		}
+		
+		add_constraint_util(components, rlp);	
         // restore original adjacency list
 		adjacencyList[origin].insert(destination);
         adjacencyList[destination].insert(origin);
 	}
 	iter++;
 }
+
+
+
 
 
 void PadbergRao::add_constraint_util(std::vector<Component>& components, RelaxedLP& rlp){
