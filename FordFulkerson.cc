@@ -1,11 +1,10 @@
 
-
-//#include <time.h>
 #include <queue>
 #include "FordFulkerson.h"
 
 
-FordFulkerson::FordFulkerson(const Graph& g):n(g.get_g_prime_num_nodes()),numEdges(g.get_g_prime_num_edges()),
+FordFulkerson::FordFulkerson(const Graph& g):n(g.get_g_star_prime_num_nodes()),
+							numEdges(g.get_g_star_prime_num_edges()),
 							edgeList(g.get_edgeList()),capList(g.get_capList()){
 	residualEdges = 0;
 	try{
@@ -21,9 +20,9 @@ FordFulkerson::FordFulkerson(const Graph& g):n(g.get_g_prime_num_nodes()),numEdg
 	  	exit(1);
 	}
 
-	construct_residual_graph();	
+	construct_residual_graph();	//construct residual graph
 
-	for(int i=0; i<n;i++)
+	for(int i=0; i<n;i++)	//set node id 
 		nodeList[i].id = i;
 }
 
@@ -41,17 +40,20 @@ double FordFulkerson::min(double x, double y)
 	return x<y ? x : y;  // returns minimum of x and y
 }
 
-
+/*
+* nodelist store the S-T cut information
+*/
 node *FordFulkerson::get_nodeList(){
-	return nodeList;
+	return nodeList;	
 }
 
-// Breadth-First Search for an augmenting path
 
-int FordFulkerson::bfs(int start, int target)
-// Searches for path from start to target.
-// Returns 1 if found, otherwise 0.
-{
+/*
+* Breadth-First Search for an augmenting path
+* Searches for path from start to target
+* Returns 1 if found, otherwise 0.
+*/
+int FordFulkerson::bfs(int start, int target){
 	int u,v,i;
     for (u=0; u<n; u++) {
    		color[u] = WHITE;
