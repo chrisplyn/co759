@@ -75,11 +75,11 @@ void PadbergRao::add_constraint(RelaxedLP &rlp, int &iter){
 			break;
 		}	
 		
-		for(auto it1 = components.begin();it1 != components.end(); it1++){
-			for(auto it2 = it1->begin(); it2 != it1->end(); it2++){
-				*it2 = g_prime_node_map.get(*it2);
-			}
-		}
+		// for(auto it1 = components.begin();it1 != components.end(); it1++){
+		// 	for(auto it2 = it1->begin(); it2 != it1->end(); it2++){
+		// 		*it2 = g_prime_node_map.get(*it2);
+		// 	}
+		// }
 		
 		add_constraint_util(components, rlp);	
         // restore original adjacency list
@@ -88,8 +88,6 @@ void PadbergRao::add_constraint(RelaxedLP &rlp, int &iter){
 	}
 	iter++;
 }
-
-
 
 
 
@@ -105,6 +103,10 @@ void PadbergRao::add_constraint_util(std::vector<Component>& components, Relaxed
 		}    
 	}
 	
+	
+	for(auto it = components[i-1].begin(); it != components[i-1].end(); it++)
+		*it = g_prime_node_map.get(*it);
+
 	std::vector<int> gamma = Heuristics1::findGamma(components[i-1], rlp); 	
 	int rval = Heuristics1::add_constraint_util(gamma,components[i-1].size(),rlp);    
     
