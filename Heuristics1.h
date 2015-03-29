@@ -10,7 +10,7 @@ class Heuristics1
 public:
 	static int add_constraint_util(Component&, int, RelaxedLP &);
 	static std::vector<int> findGamma(Component &, RelaxedLP &);
-	static int add_constraint(RelaxedLP &, Graph&, int & );
+	static int add_constraint(RelaxedLP &, Graph&);
 };
 
 #endif

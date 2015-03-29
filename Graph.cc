@@ -64,7 +64,7 @@ bool Graph::check_integrality(){
 			return false;
 		}
 	}
-	std::cout << "a matching is found!!!!!!" << std::endl;
+	//std::cout << "a matching is found!!!!!!" << std::endl;
 	return true;	
 }
 
@@ -158,7 +158,7 @@ void Graph::construct_g_star_prime(){
 	 * construct directed graph based on undirected graph, the number of edges in G*' will be doubled
 	 */
 	
-	std::cout << "G'has " << num_g_star_prime_Edges << " edges" << std::endl; 
+	//std::cout << "G'has " << num_g_star_prime_Edges << " edges" << std::endl; 
 	for (i = 0,j=0; i < G_numEdges; i++) {
 		
 		if ( lp_sol[i] > LP_EPSILON && lp_sol[i] < 1.0 - LP_EPSILON){

@@ -3,7 +3,7 @@ CPLEX_INCLUDE = /opt/ibm/ILOG/CPLEX_Studio1261/cplex/include/ilcplex
 
 CXX = g++
 CXXFLAGS = -O3 -g -Wall -MMD -std=c++11 -I$(CPLEX_INCLUDE)
-EXEC = co759_project
+EXEC = perfect_matching
 OBJECTS = main.o Graph.o FordFulkerson.o GomoryHu.o PadbergRao.o lp.o util.o RelaxedLP.o DFS.o Heuristics1.o Bimap.o
 DEPENDS = ${OBJECTS:.o=.d}
 

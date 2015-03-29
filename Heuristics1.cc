@@ -62,7 +62,7 @@ CLEANUP:
 
 
 
-int Heuristics1::add_constraint(RelaxedLP &rlp, Graph& g, int &iter)
+int Heuristics1::add_constraint(RelaxedLP &rlp, Graph& g)
 {
     /* Run through all component in components*/
     
@@ -86,7 +86,7 @@ int Heuristics1::add_constraint(RelaxedLP &rlp, Graph& g, int &iter)
 			sum += lp_sol[*it1];	
 		}
 			
-		if(sum > (double((*it).size())-1.0)/2.0+0.00001){				
+		if(sum > (double((*it).size())-1.0)/2.0+0.001){				
 			rval = add_constraint_util(gamma,(*it).size(),rlp);  
 			flag = true;  
 	    }
@@ -95,8 +95,7 @@ int Heuristics1::add_constraint(RelaxedLP &rlp, Graph& g, int &iter)
 	       fprintf(stderr, "add_constraint failed"); return 1;
 	    }
 	}
-	
-	iter++;
+
 	if(flag){
 		return 0;
 	}else{		

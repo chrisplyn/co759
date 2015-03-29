@@ -2,7 +2,7 @@
 #include "DFS.h"
 #include <iomanip> 
 
-PadbergRao::PadbergRao(Graph &g):gh(new GomoryHu(g)),numNodes(g.get_g_prime_num_nodes()),
+PadbergRao::PadbergRao(Graph &g):gh(new GomoryHu(g)),numNodes(g.get_g_star_prime_num_nodes()),
 	g_prime_node_map(g.get_g_prime_node_map()){
 		
 	nl = gh->construct_GH_tree();
@@ -45,7 +45,7 @@ void PadbergRao::construct_gh_tree_adjacencyList(){
 
 
 
-void PadbergRao::add_constraint(RelaxedLP &rlp, int &iter){
+void PadbergRao::add_constraint(RelaxedLP &rlp){
 	int i,origin,destination;
 	
 	for(i=0; i<numNodes; i++){
@@ -62,51 +62,48 @@ void PadbergRao::add_constraint(RelaxedLP &rlp, int &iter){
 			visited[j] = false;
 		}
 
-		//remove edge	   
-		//std::cout << "The removed edge is (" << origin << "," << destination << ")" << std::endl;
-        
+		//remove one edge from GH tree           
 		adjacencyList[origin].erase(destination);
 		adjacencyList[destination].erase(origin);	
-
+		
+		//perform depth first search on modified GH-tree
 		DFS::find_connected_components(numNodes, adjacencyList, visited, components);
 		
 		if(components.size()!=2){
 			std::cout << "WRONG component number!!!! " << std::endl;
 			break;
 		}	
-		
-		// for(auto it1 = components.begin();it1 != components.end(); it1++){
-		// 	for(auto it2 = it1->begin(); it2 != it1->end(); it2++){
-		// 		*it2 = g_prime_node_map.get(*it2);
-		// 	}
-		// }
-		
+			
 		add_constraint_util(components, rlp);	
+        
         // restore original adjacency list
 		adjacencyList[origin].insert(destination);
         adjacencyList[destination].insert(origin);
 	}
-	iter++;
 }
 
 
-
+/*
+* helper function, find the smaller components after removing one edge from original GH-tree
+* then adding corresponding contraints to the relaxed lp problem
+*/
 void PadbergRao::add_constraint_util(std::vector<Component>& components, RelaxedLP& rlp){
 	unsigned int tmp = 0,i=0;	
 	for (auto it=components.begin();it!=components.end();++it){    			   
-		if((*it).size() % 2 != 0 && (*it).size() != 1){			
+		if((*it).size() % 2 != 0 && (*it).size() != 1){	 //only consider components have odd size			
 			if(tmp < (*it).size()){
-				i++;	 
-			}	 
+				i++;	 //find smaller component
+			}	 	
 		}else{
 			return;
 		}    
 	}
 	
-	
+	//map new node in the smaller component back to old node 
 	for(auto it = components[i-1].begin(); it != components[i-1].end(); it++)
 		*it = g_prime_node_map.get(*it);
-
+	
+	//find gamma corresponding to the smaller conponent, then add it to the relaxed lp
 	std::vector<int> gamma = Heuristics1::findGamma(components[i-1], rlp); 	
 	int rval = Heuristics1::add_constraint_util(gamma,components[i-1].size(),rlp);    
     

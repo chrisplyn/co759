@@ -1,5 +1,7 @@
 #include "RelaxedLP.h"
-
+#include <iostream>
+#include <fstream> 
+using namespace std;
 
 RelaxedLP::RelaxedLP():numNodes(0),numEdges(0),edgeList(0),weightList(0),
 					adjacencyList(0),obj_val(0.0),lp_sol(0),lp(0){}
@@ -135,15 +137,15 @@ int RelaxedLP::getprob(char *filename, int geometric_data, int seed, int ncount_
                 goto CLEANUP;
             }
     
-            printf ("%d\n", numNodes);
-            for (int i = 0; i < numNodes; i++) {
-                printf ("%.0f %.0f\n", x[i], y[i]);
-            }
-            printf ("\n");
+            //~ printf ("%d\n", numNodes);
+            //~ for (int i = 0; i < numNodes; i++) {
+                //~ printf ("%.0f %.0f\n", x[i], y[i]);
+            //~ }
+            //~ printf ("\n");
         }
 
         numEdges = (numNodes * (numNodes - 1)) / 2;
-        printf ("Complete graph: %d nodes, %d edges\n", numNodes, numEdges);
+        //printf ("Complete graph: %d nodes, %d edges\n", numNodes, numEdges);
 
 		edgeList = new int[2*numEdges];
         if (!edgeList) {
@@ -286,11 +288,6 @@ int RelaxedLP::solve_relaxed_lp(){
         fprintf(stderr, "CO759lp_x failed\n");
     }
     
-    //~ for (int j = 0; j < numEdges; j++) {
-		//~ if (lp_sol[j] > LP_EPSILON) 
-         //~ printf ("%d %d %f\n", edgeList[2*j], edgeList[2*j+1], lp_sol[j]); 
-    //~ }
-    
     rval = CO759lp_objval(lp, &obj_val);
     if (rval) {
         fprintf (stderr, "CO759lp_objval failed\n"); 
@@ -313,3 +310,24 @@ void RelaxedLP::print_relaxed_lp_sol(){
     }
     fflush (stdout);
 }
+
+
+void RelaxedLP::write_relaxed_lp_sol(const string& filename){	
+	ofstream fout(filename.c_str()); 
+	
+	if(fout.is_open()){			
+		//cout << "File Opened successfully!!!. Writing matching data from array to file" << endl;		
+		fout << numNodes << " " << numNodes/2 << endl;
+		
+		for (int j = 0; j < numEdges; j++) {
+			if (lp_sol[j] > LP_EPSILON){
+				fout << edgeList[2*j] << " " << edgeList[2*j+1] << " " << weightList[j] << endl;
+			}
+		}	
+	}else{
+		cout << "File could not be opened." << endl;
+	}
+	//cout << "the length of optimal matching is " << obj_val << endl;
+	fout.close();
+	//CO759lp_write (lp, "matching.lp"); 
+}	

@@ -27,7 +27,7 @@ private:
 public:
 	PadbergRao(Graph &);
 	~PadbergRao();
-	void add_constraint(RelaxedLP&, int&);	
+	void add_constraint(RelaxedLP&);	
 	void print_gh_tree();
 	
 };

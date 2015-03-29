@@ -7,6 +7,7 @@
 #include <math.h>
 #include <vector>
 #include <utility> 
+#include <string>
 #define LP_EPSILON 0.000001
 
 typedef std::pair<int,int> IntPair;
@@ -47,6 +48,7 @@ public:
 	double * get_relaxed_lp_sol();
 	double get_relaxed_lp_objval();	
 	void print_relaxed_lp_sol();
+	void write_relaxed_lp_sol(const std::string&);
 
 };
 

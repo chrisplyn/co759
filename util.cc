@@ -35,8 +35,8 @@ int CO759_build_xy (int ncount, double *xlist, double *ylist, int gridsize)
     int rval = 0, i, j, winner, x, y;
     int **hit = (int **) NULL, *hitcount = (int *) NULL;
 
-    printf ("Random %d point set, gridsize = %d\n", ncount, gridsize);
-    fflush (stdout);
+    //~ printf ("Random %d point set, gridsize = %d\n", ncount, gridsize);
+    //~ fflush (stdout);
 
     hit =  (int **) malloc (gridsize * sizeof (int *));
     if (!hit) {
@@ -76,7 +76,8 @@ int CO759_build_xy (int ncount, double *xlist, double *ylist, int gridsize)
                 winner = 1;
             }
             if (!winner) {
-                printf ("X"); fflush (stdout);
+                //printf ("X"); 
+                fflush (stdout);
             }
         } while (!winner);
         xlist[i] = (double) x;
@@ -85,7 +86,7 @@ int CO759_build_xy (int ncount, double *xlist, double *ylist, int gridsize)
 
 CLEANUP:
 
-    printf ("\n");
+    //printf ("\n");
 
     if (hit) {
         for (i = 0; i < gridsize; i++) {
