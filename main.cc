@@ -141,5 +141,5 @@ int main(int ac, char **av)
 	}	
 	cout << "the length of optimal matching is " <<  rlp.get_relaxed_lp_objval() << endl;
 	cout <<  "running time of the perfect 1-matching program is " << CO759_zeit() - szeit << endl;
-	//rlp.write_relaxed_lp_sol("matching.out");
+	rlp.write_relaxed_lp_sol("matching.out");
 }
