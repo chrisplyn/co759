@@ -34,10 +34,6 @@ private:
 
 	static double min (double, double);
 	int bfs (int, int);	
-	static int tailThenHead(const void* , const void*); // this function must be static
-														//used to compare edges
-	void dumpEdges(int);	//output all edges in the graph						
-	void dumpFinal();
 	void construct_residual_graph();
 
 public:

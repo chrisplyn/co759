@@ -136,17 +136,11 @@ int RelaxedLP::getprob(char *filename, int geometric_data, int seed, int ncount_
                 fprintf (stderr, "CO759_build_xy failed\n");
                 goto CLEANUP;
             }
-    
-            //~ printf ("%d\n", numNodes);
-            //~ for (int i = 0; i < numNodes; i++) {
-                //~ printf ("%.0f %.0f\n", x[i], y[i]);
-            //~ }
-            //~ printf ("\n");
+  
         }
 
         numEdges = (numNodes * (numNodes - 1)) / 2;
-        //printf ("Complete graph: %d nodes, %d edges\n", numNodes, numEdges);
-
+        
 		edgeList = new int[2*numEdges];
         if (!edgeList) {
             fprintf (stderr, "out of memory for edgeList\n");
@@ -277,12 +271,7 @@ int RelaxedLP::solve_relaxed_lp(){
         	rval = 1; 
     	}
 	}
-    
-    //~ rval = CO759lp_write (lp, "matching.lp");
-    //~ if (rval) {
-	   //~ fprintf (stderr, "CO759lp_write failed\n"); 
-    //~ }
-    
+     
     rval = CO759lp_x(lp, lp_sol);
     if (rval) {
         fprintf(stderr, "CO759lp_x failed\n");
@@ -299,7 +288,6 @@ int RelaxedLP::solve_relaxed_lp(){
 
 void RelaxedLP::print_relaxed_lp_sol(){
 	if (lp_sol == 0) {
-		//destruct();
 		printf("MUST CALL SOLVE_RELAXED_LP first!!!!!!!!");
 		return;
 	}	
@@ -313,12 +301,10 @@ void RelaxedLP::print_relaxed_lp_sol(){
 
 
 void RelaxedLP::write_relaxed_lp_sol(const string& filename){	
-	ofstream fout(filename.c_str()); 
 	
+	ofstream fout(filename.c_str()); 
 	if(fout.is_open()){			
-		//cout << "File Opened successfully!!!. Writing matching data from array to file" << endl;		
-		fout << numNodes << " " << numNodes/2 << endl;
-		
+		fout << numNodes << " " << numNodes/2 << endl;		
 		for (int j = 0; j < numEdges; j++) {
 			if (lp_sol[j] > LP_EPSILON){
 				fout << edgeList[2*j] << " " << edgeList[2*j+1] << " " << weightList[j] << endl;
@@ -327,7 +313,7 @@ void RelaxedLP::write_relaxed_lp_sol(const string& filename){
 	}else{
 		cout << "File could not be opened." << endl;
 	}
-	//cout << "the length of optimal matching is " << obj_val << endl;
+	
 	fout.close();
 	//CO759lp_write (lp, "matching.lp"); 
 }	

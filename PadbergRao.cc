@@ -90,8 +90,7 @@ void PadbergRao::add_constraint(RelaxedLP &rlp){
 void PadbergRao::add_constraint_util(std::vector<Component>& components, RelaxedLP& rlp){
 	unsigned int tmp = oo,i=0;	
 	for (auto it=components.begin();it!=components.end();++it){    			   
-		if((*it).size() % 2 != 0 && (*it).size() != 1){	 //only consider components have odd size			
-			
+		if((*it).size() % 2 != 0 && (*it).size() != 1){	 //only consider components have odd size					
 			if(tmp > (*it).size()){
 				tmp = (*it).size();
 				i++;	 //find smaller component

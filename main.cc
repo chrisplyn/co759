@@ -77,14 +77,8 @@ int main(int ac, char **av)
         printf ("Must specify a problem file or use -k for random prob\n");
         rval = 1; return 0; 
     }
-    //printf ("Seed = %d\n", seed);
     srandom (seed);
 
-    //~ if (fname) {
-        //~ printf ("Problem name: %s\n", fname);
-        //~ if (geometric_data) printf ("Geometric data\n");
-    //~ }
-	
 	RelaxedLP rlp;
     rval = rlp.getprob(fname, geometric_data, seed, ncount_rand, gridsize_rand);
     if (rval) {
@@ -98,13 +92,11 @@ int main(int ac, char **av)
 		return 0;
 	}
 	
-	//int i = 0, h1_iter=0, h2_iter=0, pr_iter=0, 
 	int ind=0, ind2=0;
 	
 	double tmp, objval=0.0, szeit = CO759_zeit ();
 	
 	while(true){
-		//i++;
 		rval = rlp.solve_relaxed_lp();
 		
 		tmp = objval;
@@ -114,40 +106,32 @@ int main(int ac, char **av)
 		if(g_star.check_integrality()) break; 
 		
 		if(ind <= 10) {					
-			if(abs(objval-tmp)/tmp < 0.001){
+			if(abs(objval-tmp)/tmp < 0.01){
 				ind++;
 			}else{
 				ind=0;
 			}
-			//h1_iter++;
-			//~ printf("run heuristics1\n");
+
 			g_star.construct_g_star();
 			rval = Heuristics1::add_constraint(rlp,g_star);				
 		}
 		
 		if(rval || ind > 10){
-			//~ if(rval) printf("heuristics1 cannot find cut \n");
-			//~ if(ind >10) printf("heuristics1 cannot improve objective value \n");
 			
 			if( ind2 <= 10){
-				if(abs(objval-tmp)/tmp < 0.001){
+				if(abs(objval-tmp)/tmp < 0.01){
 					ind2++;
 				}else{
 					ind2=0;
 				}
-				//h2_iter++;
-				//~ printf("run heuristics2\n");
+
 				g_star.construct_g_star_2();			
 				rval = Heuristics1::add_constraint(rlp,g_star);
 			}
 		}	
 			
 		if(rval || (ind>10 && ind2>10)){
-			//~ if(rval) printf("heuristics2 cannot find cut \n");
-			//~ if(ind>10 && ind2>10) printf("h1 and h2 cannot improve objective value \n");
-			
-			 //pr_iter++;	
-			 //~ printf("need to do Padberg-Rao\n");
+
 			 g_star.construct_g_star();
 			 g_star.construct_g_star_prime();
 			 PadbergRao pr(g_star);
@@ -155,10 +139,7 @@ int main(int ac, char **av)
 		}
 		
 	}	
+	cout << "the length of optimal matching is " <<  rlp.get_relaxed_lp_objval() << endl;
+	cout <<  "running time of the perfect 1-matching program is " << CO759_zeit() - szeit << endl;
 	//rlp.write_relaxed_lp_sol("matching.out");
-	//~ cout << "number of total iterations is " << i << endl;	
-	//~ cout << "number of h1 iteration is " << h1_iter << endl;
-	//~ cout << "number of h2 iteration is " << h2_iter << endl;
-	//~ cout << "number of Padberg-Rao iterations is " << pr_iter << endl;
-	cout <<  CO759_zeit() - szeit << endl;
 }

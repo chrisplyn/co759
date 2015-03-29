@@ -25,7 +25,7 @@ std::vector<int> Heuristics1::findGamma(Component &c, RelaxedLP &rlp){
 
 
 /*
- *gamma is the set of index of the edges in set gamma(S), size = min(|S|,|V\S|) 
+ *gamma is the set of index of the edges in set gamma(S), size = |S|
 */
 int Heuristics1::add_constraint_util(std::vector<int>& gamma, int size, RelaxedLP &rlp)
 {		
@@ -39,7 +39,7 @@ int Heuristics1::add_constraint_util(std::vector<int>& gamma, int size, RelaxedL
 	newnz = gammacount;
     rmatbeg[0] = 0; /* info for row starts at position 0 */
     
-    rhs[0] = (size-1)/2.0 ;   /* right-hand-side of subtour is  (min(|S|,|V\S|)-1)/2*/
+    rhs[0] = (size-1)/2.0 ;   /* right-hand-side */
     sense[0] = 'L';    /* it is a <= inequality */
 		
     rmatval = new double[gammacount];
@@ -69,7 +69,6 @@ int Heuristics1::add_constraint(RelaxedLP &rlp, Graph& g)
 	std::vector<Component> odd_cut_components = g.find_odd_cut_set();
 		
 	if(odd_cut_components.empty()){
-	   //printf("no odd component has been found\n");
 	   return 1;
 	}
 	
@@ -82,10 +81,18 @@ int Heuristics1::add_constraint(RelaxedLP &rlp, Graph& g)
 		
 		std::vector<int> gamma = findGamma(*it, rlp); 	
 		sum = 0.0;
+		
+		/*
+		 * compute x*(gamma(S))
+		 */	
 		for(auto it1=gamma.begin(); it1!=gamma.end();it1++){
 			sum += lp_sol[*it1];	
 		}
-			
+		
+		/*
+		 * check whether x* violates the inequality x*(gamma(S))<=(|S|-1)/2
+		 * if it does, add the corresponding contraint to the relaxed lp 
+		 */	
 		if(sum > (double((*it).size())-1.0)/2.0+0.001){				
 			rval = add_constraint_util(gamma,(*it).size(),rlp);  
 			flag = true;  

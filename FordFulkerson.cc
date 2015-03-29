@@ -87,10 +87,10 @@ int FordFulkerson::bfs(int start, int target){
 		// No augmenting path remains, so a maximum flow and minimum cut
 		// have been found.  Black vertices are in the
 		// source side (S) of the minimum cut, while white vertices are in the
-		// sink side (T).
-	
+		// sink side (T).	
 	return color[target]==BLACK;
 }
+
 
 // implementation of Ford-Fulkerson Algorithm
 double FordFulkerson::max_flow(int source, int sink)
@@ -135,48 +135,6 @@ double FordFulkerson::max_flow(int source, int sink)
 	return max_flow;
 }
 
-
-void FordFulkerson::dumpEdges(int count)
-{
-	int i;
-	printf("  i tail head  cap\n");
-	for (i=0; i<count; i++)
-	  printf("%3d %3d  %3d %5f\n",i,edgeTab[i].tail,edgeTab[i].head,edgeTab[i].capacity);
-}
-
-
-void FordFulkerson::dumpFinal()
-{
-	int i;
-	printf("Initialized residual network:\n");
-	printf("Vertex firstEdge\n");
-	for (i=0; i<n; i++)
-	  printf(" %3d    %3d\n",i,firstEdge[i]);
-	printf("=================\n");
-	printf(" %3d    %3d\n",n,firstEdge[n]);
-
-	printf("  i tail head  cap  inv\n");
-	for (i=0; i<residualEdges; i++)
-	  printf("%3d %3d  %3d %5f  %3d\n",i,edgeTab[i].tail,edgeTab[i].head,
-		edgeTab[i].capacity,edgeTab[i].inverse);
-}
-
-
-int FordFulkerson::tailThenHead(const void* xin, const void* yin)
-{	//compare function, used in sorting and binary search
-	int result;
-	edge *x,*y;
-
-	x=(edge*) xin;
-	y=(edge*) yin;
-	result=x->tail - y->tail;
-	if (result!=0)
-	  return result;
-	else
-	  return x->head - y->head;
-}
-
-
 void FordFulkerson::construct_residual_graph(){
 
 	if(edgeList==0 || capList==0){
@@ -202,14 +160,8 @@ void FordFulkerson::construct_residual_graph(){
 	  edgeTab[workingEdges].capacity=0.0;
 	  workingEdges++;
 	}
-	
-	//~ printf("Input & inverses:\n");
-	//~ dumpEdges(workingEdges);
 
 	std::sort(edgeTab,edgeTab+workingEdges); //c++ type of sorting
-
-	// printf("Sorted edges:\n");
-	//dumpEdges(workingEdges);
 
 	for (i=1; i<workingEdges; i++)
 	  if (edgeTab[residualEdges].tail==edgeTab[i].tail
@@ -224,9 +176,6 @@ void FordFulkerson::construct_residual_graph(){
 	  }
 	residualEdges++;
 	
-	// printf("Coalesced edges:\n");
-	//dumpEdges(residualEdges);
-
 	edge inverse_edge, *ptr; 
 	for (i=0; i<residualEdges; i++)
 	{
@@ -253,10 +202,7 @@ void FordFulkerson::construct_residual_graph(){
 	  // Skip over edges with vertex i as their tail.
 	  for ( ;j<residualEdges && edgeTab[j].tail==i;j++){}		
 	}
-	firstEdge[n]=residualEdges;  //Sentinel
-	
-	//dumpFinal();
-	
+	firstEdge[n]=residualEdges;  //Sentinel	
 }
 
 
