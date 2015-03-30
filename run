@@ -1,0 +1,14 @@
+#!/bin/bash
+
+#~ if ls time* &> /dev/null; then
+	#~ rm time
+#~ fi
+#~ 
+#~ for (( no=1; no<=10; no++ )); do
+	#~ ./perfect_matching -k 1000 
+#~ done
+
+
+for (( no=1; no<=100; no++ )); do
+	echo 2 >> b
+done
